@@ -1,12 +1,12 @@
 import './App.css';
 import Navbar from './components/navabar/Navbar'
-import Notes from './components/notes/Notes'
+ import NewNote from './components/notes/NewNote'
 
 function App() {
   return (
     <div className="App">
       <Navbar/>
-      <Notes/>
+      <NewNote/>
     </div>
   );
 }

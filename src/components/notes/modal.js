@@ -1,9 +1,7 @@
 
 import { Box, Popover } from "@material-ui/core"
 import { makeStyles } from '@material-ui/core/styles';
-import { WrapText } from "@material-ui/icons";
-import { findByLabelText } from "@testing-library/dom";
-import { useState } from "react";
+
 
 const useStyles = makeStyles((theme) => ({
     popover: {
@@ -27,8 +25,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 const Modal = ({ anchorEl, setAnchorEl }) => {
     const classes = useStyles();
-    console.log(anchorEl)
     const open = Boolean(anchorEl);
+    
     const color  =['#f28b82','#fbbc04','#fff475','#ccff90','#cbf0f8','#cbf0f8','#d7aefb','#fdcfe8','#e6c9a8','#e8eaed']
     return (
         <Popover
@@ -51,8 +49,8 @@ const Modal = ({ anchorEl, setAnchorEl }) => {
             disableRestoreFocus
         >
             <Box className={classes.colorDish}>
-                {color.map(colour=>{
-                    return <Box className={classes.colorPalette} style={{background:colour}}></Box>
+                {color.map((colour,index)=>{
+                    return <Box key={index} className={classes.colorPalette} style={{background:colour}}></Box>
                 })}
 
             </Box>
