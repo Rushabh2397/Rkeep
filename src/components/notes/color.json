@@ -1,0 +1,74 @@
+[
+    {
+        "id": 1,
+        "name": "default",
+        "label": "Default",
+        "color": "#fff"
+    },
+    {
+        "id": 2,
+        "name": "red",
+        "label": "Red",
+        "color": "#f28b82"
+    },
+    {
+        "id": 3,
+        "name": "orange",
+        "label": "Orange",
+        "color": "#fbbc04"
+    },
+    {
+        "id": 4,
+        "name": "yellow",
+        "label": "Yellow",
+        "color": "#fff475"
+    },
+    {
+        "id": 5,
+        "name": "green",
+        "label": "Green",
+        "color": "#ccff90"
+    },
+    {
+        "id": 6,
+        "name": "teal",
+        "label": "Teal",
+        "color": "#a7ffeb"
+    },
+    {
+        "id": 7,
+        "name": "blue",
+        "label": "Blue",
+        "color": "#cbf0f8"
+    },
+    {
+        "id": 8,
+        "name": "darkblue",
+        "label": "Dark Blue",
+        "color": "#aecbfa"
+    },
+    {
+        "id": 9,
+        "name": "purple",
+        "label": "Purple",
+        "color": "#d7aefb"
+    },
+    {
+        "id": 10,
+        "name": "pink",
+        "label": "Pink",
+        "color": "#fdcfe8"
+    },
+    {
+        "id": 11,
+        "name": "brown",
+        "label": "Brown",
+        "color": "#e6c9a8"
+    },
+    {
+        "id": 12,
+        "name": "gray",
+        "label": "Gray",
+        "color": "#e8eaed"
+    }
+]

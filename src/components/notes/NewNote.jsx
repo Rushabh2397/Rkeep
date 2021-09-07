@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { ClickAwayListener, Paper, TextField, Toolbar, Box } from "@material-ui/core"
 import { makeStyles } from '@material-ui/core/styles';
 import TextareaAutosize from 'react-textarea-autosize';
+import NoteAction from './NoteAction'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -16,14 +17,14 @@ const useStyles = makeStyles((theme) => ({
     textArea: {
         width: "222px",
         margin: 0,
-        padding: "10px 14px",
+        padding: "15px 14px",
         border: "none",
         '&:focus': {
             outline: "none !important"
         }
     },
     addPaper: {
-        minHeight: "120px"
+        minHeight: "110px"
     },
     InputProps: {
         paddingLeft: "13px",
@@ -104,8 +105,12 @@ const NewNote = () => {
                                         placeholder="Take a note..."
                                         ref={note}
                                         onChange={() => { handleNote('note') }}
+                                        scrolling="false"
                                     />
                                 </Box>
+                                <NoteAction 
+                                setAddNote={setAddNote}
+                                />
                             </Paper>
                         </Box>
 
