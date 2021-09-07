@@ -3,7 +3,7 @@ import { ClickAwayListener, Paper, TextField, Toolbar, Box } from "@material-ui/
 import { makeStyles } from '@material-ui/core/styles';
 import TextareaAutosize from 'react-textarea-autosize';
 import NoteAction from './NoteAction'
-
+import NoteListView from './NoteListView'
 const useStyles = makeStyles((theme) => ({
     root: {
         marginLeft: theme.spacing(8) + 1,
@@ -11,7 +11,14 @@ const useStyles = makeStyles((theme) => ({
     },
     textField: {
         width: "250px",
-        margin: "0 auto"
+        margin: "0 auto",
+        [theme.breakpoints.up('sm')]: {
+            width:"500px"
+        },
+
+        [theme.breakpoints.up('md')]: {
+            width:"700px"
+        }
     },
 
     textArea: {
@@ -21,6 +28,15 @@ const useStyles = makeStyles((theme) => ({
         border: "none",
         '&:focus': {
             outline: "none !important"
+        },
+
+        [theme.breakpoints.up('sm')]: {
+            width:"472px",
+            padding:"25px 14px"
+        },
+
+        [theme.breakpoints.up('md')]: {
+            width:"672px"
         }
     },
     addPaper: {
@@ -28,7 +44,10 @@ const useStyles = makeStyles((theme) => ({
     },
     InputProps: {
         paddingLeft: "13px",
-        paddingRight: "13px"
+        paddingRight: "13px",
+        [theme.breakpoints.up('md')]: {
+            padding:"8px 13px"
+        }
     },
     inputProps: {
         border: "none"
@@ -79,6 +98,7 @@ const NewNote = () => {
                                     placeholder="Take a note..."
                                     fullWidth
                                     onClick={() => { setAddNote(!addNote) }}
+                                    InputProps={InputProps}
                                 />
                             </Paper>
                         </Box>
@@ -86,7 +106,7 @@ const NewNote = () => {
 
                     (< ClickAwayListener onClickAway={handleClickAway} >
                         <Box className={classes.textField}>
-                            <Paper className={classes.addPaper}>
+                            <Paper className={classes.addPaper} elevation={2}>
                                 <Box>
                                     <TextField
                                         size="small"
@@ -109,13 +129,14 @@ const NewNote = () => {
                                     />
                                 </Box>
                                 <NoteAction 
-                                setAddNote={setAddNote}
+                                  setAddNote={setAddNote}
                                 />
                             </Paper>
                         </Box>
 
                     </ClickAwayListener >)
             }
+            <NoteListView/>
         </Box>
     );
 }

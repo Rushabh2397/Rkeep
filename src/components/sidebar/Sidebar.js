@@ -22,7 +22,10 @@ const useStyles = makeStyles((theme) => ({
       
     },
     drawerPaper: {
-      width: drawerWidth
+      width: drawerWidth,
+      [theme.breakpoints.up('md')]: {
+        width:"350px"
+    }
     },
     drawerContainer: {
       overflow: 'auto'
@@ -34,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
           easing: theme.transitions.easing.sharp,
           duration: theme.transitions.duration.enteringScreen,
         }),
+        [theme.breakpoints.up('md')]: {
+          width:"350px"
+      }
       },
       drawerClose: {
         border:"none",  
