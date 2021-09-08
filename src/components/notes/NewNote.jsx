@@ -4,61 +4,53 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextareaAutosize from 'react-textarea-autosize';
 import NoteAction from './NoteAction'
 import NoteListView from './NoteListView'
+import axios from 'axios'
+
 const useStyles = makeStyles((theme) => ({
     root: {
-        marginLeft: theme.spacing(8) + 1,
-        paddingTop: theme.spacing(3)
+        marginLeft: theme.spacing(8),
+        paddingTop: theme.spacing(3),
     },
-    textField: {
-        width: "250px",
-        margin: "0 auto",
-        [theme.breakpoints.up('sm')]: {
-            width:"500px"
-        },
-
-        [theme.breakpoints.up('md')]: {
-            width:"700px"
-        }
+    noteContainer:{
+        width: "70%",
+        margin:"0 auto"
     },
-
     textArea: {
-        width: "222px",
-        margin: 0,
-        padding: "15px 14px",
-        border: "none",
-        '&:focus': {
-            outline: "none !important"
-        },
+       width:"100%",
+       // padding:"1em",
+        //border:"none",
+        wordWrap: "break-word",
+        resize: "none",
+        padding: "1em",
+        background: "transparent",
+        outline: "none", //onclick or hover border
+        overflow: "hidden",
+        fontSize: "20px"
+        
+    },
+    addPaper:{
+        borderRadius:'5px',
+        border:"1px solid black",
 
-        [theme.breakpoints.up('sm')]: {
-            width:"472px",
-            padding:"25px 14px"
-        },
-
-        [theme.breakpoints.up('md')]: {
-            width:"672px"
-        }
-    },
-    addPaper: {
-        minHeight: "110px"
-    },
-    InputProps: {
-        paddingLeft: "13px",
-        paddingRight: "13px",
-        [theme.breakpoints.up('md')]: {
-            padding:"8px 13px"
-        }
-    },
-    inputProps: {
-        border: "none"
     }
+
+    // InputProps: {
+    //     paddingLeft: "13px",
+    //     paddingRight: "13px",
+    //     [theme.breakpoints.up('md')]: {
+    //         padding:"8px 13px"
+    //     }
+    // },
+    // inputProps: {
+    //     border: "none"
+    // }
 
 }))
 
 
 
 const NewNote = () => {
-    
+
     const classes = useStyles();
     const title = useRef(null);
     const note = useRef(null);
@@ -73,7 +65,9 @@ const NewNote = () => {
         className: classes.inputProps
     }
 
-    const handleClickAway = () => {
+    const handleClickAway = async () => {
+        const res = await axios.post('http://localhost:5000/user/add_note', { title: noteObj.title, note: noteObj.note })
+        console.log("res", res)
         setAddNote(!addNote)
     }
 
@@ -85,59 +79,54 @@ const NewNote = () => {
     }
 
     return (
-        <Box className={classes.root}>
+        <div className={classes.root}>
             <Toolbar />
-            {
-                !addNote ?
-                    (
-                        <Box className={classes.textField}>
-                            <Paper>
-                                <TextField
-                                    size="small"
-                                    variant="outlined"
-                                    placeholder="Take a note..."
-                                    fullWidth
-                                    onClick={() => { setAddNote(!addNote) }}
-                                    InputProps={InputProps}
-                                />
-                            </Paper>
-                        </Box>
-                    ) :
-
-                    (< ClickAwayListener onClickAway={handleClickAway} >
-                        <Box className={classes.textField}>
-                            <Paper className={classes.addPaper} elevation={2}>
-                                <Box>
+            <div className={classes.noteContainer}>
+                {
+                    !addNote ?
+                        (
+                            <div className={classes.textField}>
+                                <Paper>
                                     <TextField
                                         size="small"
-                                        variant="standard"
-                                        placeholder="Title"
-                                        fullWidth
-                                        InputProps={InputProps}
-                                        inputProps={inputProps}
-                                        inputRef={title}
-                                        onChange={() => { handleNote('title') }}
-                                    />
-                                </Box>
-                                <Box>
-                                    <TextareaAutosize
-                                        className={classes.textArea}
+                                        variant="outlined"
                                         placeholder="Take a note..."
-                                        ref={note}
-                                        onChange={() => { handleNote('note') }}
-                                        scrolling="false"
+                                        fullWidth
+                                        onClick={() => { setAddNote(!addNote) }}
+                                        InputProps={InputProps}
                                     />
-                                </Box>
-                                <NoteAction 
-                                  setAddNote={setAddNote}
-                                />
-                            </Paper>
-                        </Box>
+                                </Paper>
+                            </div>
+                        ) :
 
-                    </ClickAwayListener >)
-            }
-            <NoteListView/>
-        </Box>
+                        (< ClickAwayListener onClickAway={handleClickAway} >
+                            
+                                <Paper className={classes.addPaper} elevation={2}>
+                                    <div>
+                                        <TextareaAutosize
+                                            placeholder="Title"
+                                            ref={title}
+                                            onChange={() => { handleNote('title') }}
+                                            scrolling="false"
+                                            className={classes.textArea}
+                                        />
+                                        <TextareaAutosize
+                                            className={classes.textArea}
+                                            placeholder="Take a note..."
+                                            ref={note}
+                                            onChange={() => { handleNote('note') }}
+                                            scrolling="false"
+                                        />
+                                     </div>   
+                                    <NoteAction
+                                        setAddNote={setAddNote}
+                                    />
+                                </Paper>
+
+                        </ClickAwayListener >)
+                }
+            </div>
+        </div>
     );
 }
 
