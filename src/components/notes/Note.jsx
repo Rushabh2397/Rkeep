@@ -55,17 +55,22 @@ const Note = () => {
         <div>
             <Navabar />
             {user.screen==='Notes' ? <NewNote /> :(<Toolbar/>)}
-            {/* {
+            {
+                user.view === 'List' ?
 
-                noteObj.notes && noteObj.notes.length > 0
+                (noteObj.notes && noteObj.notes.length > 0
                     ?
                    ( (noteObj.notes.map((note, index) => {
                         return <NoteListView key={index} notz={note} updateNotes={updateNotes} />
                     })))
                     :
                     (<div> Nothing</div>)
-            } */}
-            <GridView notz={noteObj.notes} updateNotes={updateNotes}/>
+                ) :
+                (
+                    noteObj.notes && noteObj.notes.length > 0 ?   <GridView notz={noteObj.notes} updateNotes={updateNotes}/>:(<div></div>)
+                )
+            } 
+            
         </div >
     )
 }

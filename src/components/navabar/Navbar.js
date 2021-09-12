@@ -15,6 +15,7 @@ import Sidebar from '../sidebar/Sidebar'
 import { getAllUserNotes} from '../api'
 import { useUser } from '../context/UserContext'
 import {useNote} from '../context/NoteContext'
+import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     },
     menuButton: {
         marginRight: theme.spacing(0),
-        padding: theme.spacing(1)
+        padding: theme.spacing(1),
     },
     title: {
         padding: theme.spacing(1),
@@ -76,7 +77,7 @@ const Navbar = () => {
     const theme = useTheme();
     const [visible, setVisible] = useState(false);
     const [open, setOpen] = useState(false);
-    const {user} = useUser()
+    const {user,userDispatch} = useUser()
     const [active,setActive] = useState(user.screen||'Notes')
     
     
@@ -85,10 +86,14 @@ const Navbar = () => {
     const InputProps = {
         className: classes.searchBarz
     }
+    
 
-    const lg = useMediaQuery(theme.breakpoints.down("lg"));
-
-    console.log("lg",lg)
+    const handleView  =()=>{
+        let view = user.view === 'List' ? 'Grid' : 'List'
+        userDispatch({ type: 'USER_PREFERENCE', payload: { view: view } })
+        localStorage.setItem('notzzUser', JSON.stringify({ ...user, view:view  }))
+    }
+   
 
     const searchBar = () => {
         console.log("here")
@@ -129,7 +134,7 @@ const Navbar = () => {
                             <MenuIcon />
                         </IconButton>
                         <IconButton className={classes.menuButton} color="inherit" aria-label="menu">
-                            <Icon className="fa fa-lightbulb" style={{ color: "gold" }} />
+                            <Icon className="fa fa-lightbulb fa-md" style={{ color: "gold" }} />
                         </IconButton>
                         <Typography variant="h6" className={classes.title}>
                             {user.screen}
@@ -149,12 +154,12 @@ const Navbar = () => {
                     </Box>
 
                     <Box>
-                        <IconButton className={classes.menuButton} color="inherit" aria-label="menu">
-                            <DragHandleIcon />
+                        <IconButton className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleView}>
+                         {  user.view!=='List' ? <DragHandleIcon fontSize="large" /> : (<ViewComfyIcon fontSize="large"/>)}
                         </IconButton>
 
                         <IconButton className={classes.menuButton} color="inherit" aria-label="menu">
-                            <AccountCircleOutlinedIcon />
+                            <AccountCircleOutlinedIcon fontSize="large"/>
                         </IconButton>
                     </Box>
 
