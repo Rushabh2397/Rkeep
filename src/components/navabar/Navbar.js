@@ -88,8 +88,8 @@ const Navbar = () => {
 
     return (
         <div className={classes.root}>
-            <AppBar position="fixed" color="transparent" style={{zIndex:1300}}>
-                <Toolbar className={classes.row}>
+            <AppBar position="fixed" color="transparent"  style={{zIndex:1300}}>
+                <Toolbar className={classes.row} style={{backgroundColor:"#fff"}}>
                     <Box className={classes.row}>
                         <IconButton className={classes.menuButton} color="inherit" aria-label="menu" onClick={()=>{setOpen(!open)}} >
                             <MenuIcon />

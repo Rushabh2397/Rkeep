@@ -3,13 +3,20 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {NoteProvider} from './components/context/NoteContext'
+import { NoteProvider } from './components/context/NoteContext'
+import { UserProvider } from './components/context/UserContext'
+import { BrowserRouter } from 'react-router-dom';
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <NoteProvider>
-      <App />
-    </NoteProvider>
+    <UserProvider>
+      <NoteProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </NoteProvider>
+    </UserProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

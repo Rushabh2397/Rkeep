@@ -1,49 +1,70 @@
 import { useState, useRef } from "react";
-import { ClickAwayListener, Paper, TextField, Toolbar, Box } from "@material-ui/core"
+import { ClickAwayListener, Paper, TextField, Toolbar } from "@material-ui/core"
 import { makeStyles } from '@material-ui/core/styles';
 import TextareaAutosize from 'react-textarea-autosize';
 import NoteAction from './NoteAction'
-import NoteListView from './NoteListView'
-import axios from 'axios'
+import { addUserNote } from '../api'
+import { useNote } from '../context/NoteContext'
+import Color from './color.json'
+
 
 const useStyles = makeStyles((theme) => ({
-    root: {
+    noteDisplay: {
         marginLeft: theme.spacing(8),
         paddingTop: theme.spacing(3),
     },
-    noteContainer:{
-        width: "70%",
-        margin:"0 auto"
+    paperContainer: {
+        width: "80%",
+        margin: "0 auto",
+        [theme.breakpoints.up('sm')]: {
+            width: "70%"
+        },
+        [theme.breakpoints.up('md')]: {
+            width: "60%"
+        }
     },
-    textArea: {
-       width:"100%",
-       // padding:"1em",
-        //border:"none",
-        wordWrap: "break-word",
+    textAreaTitle: {
+        width: "100%",
+        WebkitBoxSizing: "border-box",
+        padding: "0.6rem",
         resize: "none",
-        padding: "1em",
-        background: "transparent",
-        outline: "none", //onclick or hover border
-        overflow: "hidden",
-        fontSize: "20px"
-        
+        border: "none",
+        fontSize: "1rem",
+        fontWeight: 500,
+        lineHeight: "1.1rem",
+        letterSpacing: "0.05rem",
+        '&:focus': {
+            outline: "none !important"
+        },
+        [theme.breakpoints.up('md')]: {
+            padding: '0.7rem',
+            fontSize: "1.2rem"
+        }
     },
-    addPaper:{
-        borderRadius:'5px',
-        border:"1px solid black",
+    textAreaNote: {
+        width: "100%",
+        WebkitBoxSizing: "border-box",
+        padding: "0.6rem",
+        resize: "none",
+        border: "none",
+        fontWeight: 400,
+        letterSpacing: "0.04rem",
+        '&:focus': {
+            outline: "none !important"
+        },
+        [theme.breakpoints.up('md')]: {
+            padding: '0.7rem',
+            fontSize: "1rem"
+        }
+    },
 
+    InputProps: {
+        paddingLeft: "13px",
+        paddingRight: "13px",
+        [theme.breakpoints.up('md')]: {
+            padding: "8px 13px"
+        }
     }
-
-    // InputProps: {
-    //     paddingLeft: "13px",
-    //     paddingRight: "13px",
-    //     [theme.breakpoints.up('md')]: {
-    //         padding:"8px 13px"
-    //     }
-    // },
-    // inputProps: {
-    //     border: "none"
-    // }
 
 }))
 
@@ -55,20 +76,42 @@ const NewNote = () => {
     const title = useRef(null);
     const note = useRef(null);
     const [addNote, setAddNote] = useState(false);
-    const [noteObj, setNoteObj] = useState({ title: '', note: '' })
+    const [noteObj, setNoteObj] = useState({ title: '', note: '',is_archived:0, isPinned: false })
+    const [selectedColor, setSelectedColor] = useState(1)
+    const { dispatch } = useNote()
+
+    const updateColor = (id) => {
+        setSelectedColor(id)
+    }
+
+    const updateArchive = ()=>{
+        setNoteObj({
+            ...noteObj,
+            is_archived : noteObj.is_archived===1 ? 0:1
+        })
+    }
 
     const InputProps = {
         className: classes.InputProps
     }
 
-    const inputProps = {
-        className: classes.inputProps
-    }
+
 
     const handleClickAway = async () => {
-        const res = await axios.post('http://localhost:5000/user/add_note', { title: noteObj.title, note: noteObj.note })
-        console.log("res", res)
-        setAddNote(!addNote)
+        try {
+            setAddNote(!addNote)
+            let userNote = noteObj.note
+            if (userNote.trim() !== "") {
+                const res = await addUserNote({ title: noteObj.title, note: noteObj.note, is_archived: noteObj.isArchived ? 1 : 0, color: Color[selectedColor - 1].name })
+                dispatch({ type: 'ADD', payload: res.data.data })
+            }
+
+        } catch (error) {
+            console.log("error", error)
+        } finally {
+            setNoteObj({ title: '', note: '', isArchived: false, isPinned: false })
+            setSelectedColor(1)
+        }
     }
 
     const handleNote = (key) => {
@@ -78,54 +121,62 @@ const NewNote = () => {
         })
     }
 
+
+
     return (
-        <div className={classes.root}>
+
+        <div className={classes.noteDisplay}>
             <Toolbar />
-            <div className={classes.noteContainer}>
-                {
-                    !addNote ?
-                        (
-                            <div className={classes.textField}>
-                                <Paper>
-                                    <TextField
-                                        size="small"
-                                        variant="outlined"
-                                        placeholder="Take a note..."
-                                        fullWidth
-                                        onClick={() => { setAddNote(!addNote) }}
-                                        InputProps={InputProps}
-                                    />
-                                </Paper>
-                            </div>
-                        ) :
+            {!addNote ?
+                (
+                    <div className={classes.paperContainer}>
+                        <Paper>
+                            <TextField
+                                size="small"
+                                variant="outlined"
+                                placeholder="Take a note..."
+                                fullWidth
+                                onClick={() => { setAddNote(!addNote) }}
+                                InputProps={InputProps}
+                            />
+                        </Paper>
+                    </div>
+                )
+                :
+                (
+                    < ClickAwayListener onClickAway={() => { handleClickAway() }} >
+                        <div className={classes.paperContainer}>
 
-                        (< ClickAwayListener onClickAway={handleClickAway} >
-                            
-                                <Paper className={classes.addPaper} elevation={2}>
-                                    <div>
-                                        <TextareaAutosize
-                                            placeholder="Title"
-                                            ref={title}
-                                            onChange={() => { handleNote('title') }}
-                                            scrolling="false"
-                                            className={classes.textArea}
-                                        />
-                                        <TextareaAutosize
-                                            className={classes.textArea}
-                                            placeholder="Take a note..."
-                                            ref={note}
-                                            onChange={() => { handleNote('note') }}
-                                            scrolling="false"
-                                        />
-                                     </div>   
-                                    <NoteAction
-                                        setAddNote={setAddNote}
-                                    />
-                                </Paper>
+                            <Paper elevation={2} style={{ backgroundColor: Color[selectedColor - 1].color }}>
+                                <TextareaAutosize
+                                    className={classes.textAreaTitle}
+                                    placeholder="Title"
+                                    ref={title}
+                                    onChange={() => { handleNote('title') }}
+                                    scrolling="false"
+                                    style={{ backgroundColor: Color[selectedColor - 1].color }}
+                                />
+                                <TextareaAutosize
+                                    className={classes.textAreaNote}
+                                    placeholder="Take a note..."
+                                    ref={note}
+                                    onChange={() => { handleNote('note') }}
+                                    scrolling="false"
+                                    style={{ backgroundColor: Color[selectedColor - 1].color }}
+                                />
+                                <NoteAction
+                                    setAddNote={setAddNote}
+                                    setNoteObj={setNoteObj}
+                                    noteObj={noteObj}
+                                    icon={{ palette: true, archive: true, cancel: true }}
+                                    updateColor={updateColor}
+                                    updateArchive={updateArchive}
+                                />
+                            </Paper>
+                        </div>
+                    </ClickAwayListener>
 
-                        </ClickAwayListener >)
-                }
-            </div>
+                )}
         </div>
     );
 }

@@ -23,13 +23,16 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const NoteColor = ({ anchorEl }) => {
-
+const NoteColor = ({ anchorEl,updateColor}) => {
+   //console.log("anchorEl",noteObj)
     const classes = useStyles()
     const [selected,setSelected] = useState(1)
 
     const open = Boolean(anchorEl);
-
+    const updateNoteColor = (id)=>{
+        setSelected(id);
+        updateColor(id)
+    }
 
 
     return (
@@ -48,7 +51,7 @@ const NoteColor = ({ anchorEl }) => {
         >
             <Box className={classes.colorDish}>
                 {Color.map((color,index) => {
-                    return <Box key={index}  onClick={()=>{setSelected(color.id)}}>
+                    return <Box key={index}  onClick={()=>{   updateNoteColor(color.id)  } }>
                         <Tooltip title={color.label} key={color.name}>
                             <Box key={color.id} className={classes.palette} style={{ backgroundColor: color.color }}>
                                {selected===color.id ? <DoneIcon fontSize="small"/> :''} 
@@ -65,6 +68,6 @@ const NoteColor = ({ anchorEl }) => {
 
     );
 }
-
+//setNoteObj({...noteObj,color:color.name})
 
 export default NoteColor

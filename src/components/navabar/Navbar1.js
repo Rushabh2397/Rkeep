@@ -79,7 +79,7 @@ const Navbar = () => {
 
     return (
         <div className={classes.root}>
-            <AppBar position="static" color="transparent">
+            <AppBar position="static" style={{backgroundColor:"white"}} >
                 <Toolbar className={classes.navbar}>
                     <Box className={classes.row}>
                         <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">

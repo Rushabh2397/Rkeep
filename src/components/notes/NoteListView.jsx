@@ -1,60 +1,62 @@
-import { useState, useRef } from "react";
-import { ClickAwayListener, Paper, TextField, Toolbar, Box } from "@material-ui/core"
+import { useState} from "react";
+import { Paper} from "@material-ui/core"
 import { makeStyles } from '@material-ui/core/styles';
 import TextareaAutosize from 'react-textarea-autosize';
 import NoteAction from './NoteAction'
-
-
+import UpdateNote from './UpdateNote'
+import Color from './color.json'
 
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        marginLeft: theme.spacing(8) + 1,
-        paddingTop: theme.spacing(3)
+    noteDisplay: {
+        marginLeft: theme.spacing(8),
+        paddingTop: theme.spacing(5),
     },
-    textField: {
-        width: "250px",
+    paperContainer: {
+        width: "80%",
         margin: "0 auto",
-        marginTop: "25px",
         [theme.breakpoints.up('sm')]: {
-            width:"500px"
+            width: "70%"
         },
-
         [theme.breakpoints.up('md')]: {
-            width:"700px"
+            width: "60%"
         }
     },
-
-    textArea: {
-        width: "222px",
-        margin: 0,
-        padding: "15px 14px",
+    textAreaTitle: {
+        width: "100%",
+        WebkitBoxSizing: "border-box",
+        padding: "0.6rem",
+        resize: "none",
         border: "none",
+        fontSize: "1rem",
+        fontWeight: 500,
+        lineHeight: "1.1rem",
+        letterSpacing: "0.05rem",
         '&:focus': {
             outline: "none !important"
         },
-        [theme.breakpoints.up('sm')]: {
-            width:"472px",
-            padding:"25px 14px"
+        [theme.breakpoints.up('md')]: {
+            padding: '0.7rem',
+            fontSize: "1.2rem"
+        }
+    },
+    textAreaNote: {
+        width: "100%",
+        WebkitBoxSizing: "border-box",
+        padding: "0.6rem",
+        resize: "none",
+        border: "none",
+        fontWeight: 400,
+        letterSpacing: "0.04rem",
+        '&:focus': {
+            outline: "none !important"
         },
-
         [theme.breakpoints.up('md')]: {
-            width:"672px"
+            padding: '0.7rem',
+            fontSize: "1rem"
         }
-    },
-    addPaper: {
-        minHeight: "110px"
-    },
-    InputProps: {
-        paddingLeft: "13px",
-        paddingRight: "13px",
-        [theme.breakpoints.up('md')]: {
-            padding:"8px 13px"
-        }
-    },
-    inputProps: {
-        border: "none"
     }
+
 
 }))
 
@@ -63,68 +65,70 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const NoteListView = () => {
+const NoteListView = ({notz,updateNotes}) => {
 
     const classes = useStyles();
-    const title = useRef(null);
-    const note = useRef(null);
-    const [addNote, setAddNote] = useState(false);
-    const [noteObj, setNoteObj] = useState({ title: '', note: '' })
-    const [elevate,setElevate] = useState(false)
-    const InputProps = {
-        className: classes.InputProps
-    }
+    const [open, setOpen] = useState(false);
+    const noteColor  = Color.find(c=>c.name===notz.color)
 
-    const inputProps = {
-        className: classes.inputProps
+    const updateNote = ()=>{
+        return <UpdateNote notz={notz} open={open} setOpen={setOpen}/>
     }
+    
 
-    const handleClickAway = () => {
-        setElevate(false)
-    }
-
-    const handleNote = (key) => {
-        setNoteObj({
-            title: key === 'title' ? title.current.value : noteObj.title,
-            note: key === 'note' ? note.current.value : noteObj.note
-        })
-    }
 
 
     return (
-        < ClickAwayListener onClickAway={handleClickAway} >
-            <Box className={classes.textField}>
-                <Paper className={classes.addPaper} elevation={elevate ? 10 : 2}>
-                    <Box>
-                        <TextField
-                            size="small"
-                            variant="standard"
-                            placeholder="Title"
-                            fullWidth
-                            InputProps={InputProps}
-                            inputProps={inputProps}
-                            inputRef={title}
-                            onChange={() => { handleNote('title') }}
-                            value="Rushabh"
-                            onClick= {()=>{setElevate(true)}}
-                        />
-                    </Box>
-                    <Box>
-                        <TextareaAutosize
-                            className={classes.textArea}
-                            placeholder="Take a note..."
-                            ref={note}
-                            onChange={() => { handleNote('note') }}
-                            scrolling="false"
-                            onClick= {()=>{setElevate(true)}}
-                        />
-                    </Box>
-                    <NoteAction
-                        setAddNote={setAddNote}
-                    />
-                </Paper>
-            </Box>
-        </ClickAwayListener>
+    
+        <div className={classes.noteDisplay} >
+            
+                        
+                        <div className={classes.paperContainer} >
+                            <Paper elevation={2} style={{ backgroundColor: Color[noteColor.id-1].color }} >
+                                <TextareaAutosize
+                                    className={classes.textAreaTitle}
+                                    placeholder="Title"
+                                    scrolling="false"
+                                    style={{ backgroundColor: Color[noteColor.id-1].color } }
+                                    value = {notz.title}
+                                    onClick={()=>{setOpen(true)}}
+                                />
+                                <TextareaAutosize
+                                    className={classes.textAreaNote}
+                                    placeholder="Take a note..."
+                                    scrolling="false"
+                                    style={{ backgroundColor: Color[noteColor.id-1].color } }
+                                    value = {notz.note}
+                                    onClick={()=>{setOpen(true)}}
+                                />
+                                <NoteAction
+                                   // setNoteObj={setNote}
+                                    updateColor = {(id)=>{
+                                        console.log("Kupd",id,notz)
+                                        updateNotes({
+                                            _id: notz._id,
+                                            color : Color[id-1].name
+                                        })
+                                    }}
+
+                                    updateArchive = {()=>{
+                                        console.log("notzAr",notz)
+                                        updateNotes({
+                                            _id: notz._id,
+                                            is_archived : notz.is_archived === 1 ? 0 : 1
+                                        })
+                                    }}
+                                    noteObj={notz}
+                                    icon={{ palette: true, archive: true, delete: true }}
+                                    
+                                />
+                            </Paper>
+                        </div>
+
+                    {open && updateNote()}
+            
+        </div>
+
     )
 }
 
