@@ -1,5 +1,4 @@
 import './App.css';
-import Navbar from './components/navabar/Navbar'
 import Note from './components/notes/Note'
 import Signup from './components/signup/Signup'
 import Login from './components/login/Login'
@@ -15,7 +14,7 @@ function App() {
       <Switch>
         <Route path='/signup' component={Signup} exact />
         <Route path='/login' component={Login} exact />  
-        <PrivateRoute path='/' component={Note}></PrivateRoute>
+        <PrivateRoute path='/' component={Note} exact></PrivateRoute>
       </Switch>
     </div >
   );

@@ -72,7 +72,7 @@ const NoteListView = ({notz,updateNotes}) => {
     const noteColor  = Color.find(c=>c.name===notz.color)
 
     const updateNote = ()=>{
-        return <UpdateNote notz={notz} open={open} setOpen={setOpen}/>
+        return <UpdateNote notz={notz} open={open} setOpen={setOpen} id={noteColor.id}/>
     }
     
 

@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import NoteColor from './NoteColor'
 import { useState } from "react";
 import { useNote } from '../context/NoteContext'
-import { deleteUserNote } from '../api'
+import { updateUserNote } from '../api'
 
 const useStyles = makeStyles((theme) => ({
     noteAction: {
@@ -32,13 +32,16 @@ const NoteAction = ({ setAddNote, icon, setNoteObj, noteObj, setOpen, updateColo
         updateArchive()
     }
     const deleteNote = async () => {
-        setOpen(false)
         try {
-            const res = await deleteUserNote({ note_id: noteObj._id });
+            const res = await updateUserNote({ note_id: noteObj._id,is_active:0 });
             dispatch({ type: 'DELETE', payload: noteObj._id })
         } catch (error) {
             console.log("error", error)
         }
+    }
+
+    const handleClose = ()=>{
+        setAnchorEl(null)
     }
 
 
@@ -48,7 +51,7 @@ const NoteAction = ({ setAddNote, icon, setNoteObj, noteObj, setOpen, updateColo
             {/* <Tooltip key="colour" title="Change colour" arrow={true}> */}
             <div >
                 {
-                    icon.palette && <span className={classes.icon} onClick={(e) => { setAnchorEl(e.currentTarget) }} onBlur={() => { setAnchorEl(null) }}>
+                    icon.palette && <span className={classes.icon} onMouseEnter={(e) => { setAnchorEl(e.currentTarget) }} onClick={(e) => { setAnchorEl(e.currentTarget) }} >
 
                         <PaletteOutlinedIcon />
 
@@ -60,7 +63,6 @@ const NoteAction = ({ setAddNote, icon, setNoteObj, noteObj, setOpen, updateColo
                     icon.archive && <Tooltip key="archive" title="Archive" arrow={true}>
 
                         <span className={classes.icon} onClick={() => { handleArchive() }}>
-                            {console.log("noteObjArchive", noteObj)}
                             {noteObj.is_archived === 1 ? (<UnarchiveOutlinedIcon />) : <ArchiveOutlinedIcon />}
                         </span>
                     </Tooltip>
@@ -90,7 +92,7 @@ const NoteAction = ({ setAddNote, icon, setNoteObj, noteObj, setOpen, updateColo
                     </span>
                 </Tooltip>
             }
-            <NoteColor anchorEl={anchorEl} updateColor={updateColor} />
+            <NoteColor anchorEl={anchorEl} updateColor={updateColor} handleClose={handleClose} />
         </Box>
     )
 }

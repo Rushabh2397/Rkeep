@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { ClickAwayListener, Paper } from "@material-ui/core"
 import TextareaAutosize from 'react-textarea-autosize';
 import NoteAction from './NoteAction'
-import { updateUserNote } from '../api'
+import { updateUserNote,getAllUserNotes } from '../api'
 import { useNote } from '../context/NoteContext'
 import Color from './color.json'
 const useStyles = makeStyles((theme) => ({
@@ -69,38 +69,59 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const UpdateNote = ({ open, notz, setOpen }) => {
+const UpdateNote = ({ open, notz, setOpen,id }) => {
     const classes = useStyles();
     const title = useRef(null);
     const noteRef = useRef(null);
     const { dispatch } = useNote()
-    const noteColor = Color.find(c => c.name === notz.color)
-    console.log("noteColor",noteColor.id)
-    const [selectedColor, setSelectedColor] = useState(noteColor.id)
+    
+    const [selectedColor, setSelectedColor] = useState(id)
 
     const [note, setNote] = useState({
         _id: notz._id,
         title: notz.title,
         note: notz.note,
-        //color: notz.color,
-        isArchived: notz.is_archived === 1 ? true : false,
-        isPinned: notz.is_pinned === 1 ? true : false
+        is_archived: notz.is_archived ,
+        is_pinned: notz.is_pinned
     })
+
+    const updateColor = (id) => {
+        setSelectedColor(id)
+    }
+    
+    const updateArchive = ()=>{
+        setNote({
+            ...note,
+            is_archived : note.is_archived===1 ? 0:1
+        })
+    }
+
     const handleNote = (key) => {
         setNote({
             _id: notz._id,
             title: key === 'title' ? title.current.value : note.title,
             note: key === 'note' ? noteRef.current.value : note.note,
-            isArchived: note.isArchived,
-            color: note.color
+            is_archived: note.is_archived,
+            is_pinned : note.is_pinned
         })
+    }
+
+    const getAllNotes = async () => {
+        try {
+            console.log("getAllNotes")
+            let res = await getAllUserNotes({ isActive: 1, isArchived: 0 });
+            dispatch({ type: 'GET_ALL_NOTE', payload: res.data.data })
+        } catch (error) {
+
+        }
+
     }
     const handleClickAway = async () => {
         try {
-            console.log("noteUpdate", notz)
             setOpen(false)
-            const res = await updateUserNote({ note_id: note._id, title: note.title, note: note.note, is_archived: note.isArchived ? 1 : 0, color: note.color })
-            dispatch({ type: 'UPDATE', payload: note })
+            const res = await updateUserNote({ note_id: note._id, title: note.title, note: note.note, is_archived: note.is_archived,color:Color[selectedColor - 1].name })
+            // dispatch({ type: 'UPDATE', payload: note })
+            getAllNotes()
         } catch (error) {
             console.log("error", error)
         }
@@ -121,14 +142,14 @@ const UpdateNote = ({ open, notz, setOpen }) => {
 
                 <div >
                     {console.log('notz', notz)}
-                    <Paper elevation={2} style={{ backgroundColor: Color[selectedColor.id - 1].color }} >
+                    <Paper elevation={2} style={{ backgroundColor: Color[selectedColor - 1].color }} >
                         <TextareaAutosize
                             className={classes.textAreaTitle}
                             placeholder="Title"
                             ref={title}
                             onChange={() => { handleNote('title') }}
                             scrolling="false"
-                            style={{ backgroundColor: Color[selectedColor.id - 1].color }}
+                            style={{ backgroundColor: Color[selectedColor - 1].color }}
                             value={note.title}
                         />
                         <TextareaAutosize
@@ -137,17 +158,17 @@ const UpdateNote = ({ open, notz, setOpen }) => {
                             ref={noteRef}
                             onChange={() => { handleNote('note') }}
                             scrolling="false"
-                            style={{ backgroundColor: Color[selectedColor.id - 1].color  }}
+                            style={{ backgroundColor: Color[selectedColor - 1].color  }}
                             value={note.note}
                         />
                         <NoteAction
                             // setAddNote={setAddNote}
                             setNoteObj={setNote}
                             noteObj={note}
-                            icon={{ palette: true, archive: true, delete: true, close: true }}
+                            icon={{ palette: true, archive: true, close: true }}
                             setOpen={setOpen}
-                            setSelectedColor={setSelectedColor}
-                            selectedColor={selectedColor}
+                            updateColor={updateColor}
+                            updateArchive={updateArchive}
                         />
                     </Paper>
                 </div>

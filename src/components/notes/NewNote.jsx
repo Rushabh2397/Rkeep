@@ -76,7 +76,7 @@ const NewNote = () => {
     const title = useRef(null);
     const note = useRef(null);
     const [addNote, setAddNote] = useState(false);
-    const [noteObj, setNoteObj] = useState({ title: '', note: '',is_archived:0, isPinned: false })
+    const [noteObj, setNoteObj] = useState({ title: '', note: '',is_archived:0, is_pinned: 0 })
     const [selectedColor, setSelectedColor] = useState(1)
     const { dispatch } = useNote()
 
@@ -102,14 +102,21 @@ const NewNote = () => {
             setAddNote(!addNote)
             let userNote = noteObj.note
             if (userNote.trim() !== "") {
-                const res = await addUserNote({ title: noteObj.title, note: noteObj.note, is_archived: noteObj.isArchived ? 1 : 0, color: Color[selectedColor - 1].name })
+                let newNote = {
+                    title : noteObj.title,
+                    note : noteObj.note,
+                    is_archived: noteObj.is_archived,
+                    color : Color[selectedColor - 1].name  ,
+                    is_pinned: noteObj.is_pinned
+                }
+                const res = await addUserNote(newNote)
                 dispatch({ type: 'ADD', payload: res.data.data })
             }
 
         } catch (error) {
             console.log("error", error)
         } finally {
-            setNoteObj({ title: '', note: '', isArchived: false, isPinned: false })
+            setNoteObj({ title: '', note: '', is_archived: false, is_pinned: false })
             setSelectedColor(1)
         }
     }

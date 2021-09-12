@@ -40,11 +40,10 @@ const useStyles = makeStyles((theme) => ({
 
 const Signup = () => {
     const classes = useStyles();
-    const preventDefault = (event) => event.preventDefault();
     const [name, setName] = useState({ name: '', error: false, errMsg: '' })
     const [email, setEmail] = useState({ email: '', error: false, errMsg: '' })
     const [password, setPassword] = useState({ password: '', error: false, errMsg: '' })
-    const {dispatch} = useUser()
+    const {userDispatch} = useUser()
     const history = useHistory()
 
     const submit = async () => {
@@ -64,7 +63,7 @@ const Signup = () => {
                 const res = await userSignup({name:name.name,email:email.email,password:password.password})
                 let user = res.data.data
                 localStorage.setItem('notzzUser',JSON.stringify({name:user.name,email:user.email,token:user.token}))
-                dispatch({type:'SIGNUP',payload:user})
+                userDispatch({type:'SIGNUP',payload:user})
                 history.push('/')
             }
         } catch (error) {

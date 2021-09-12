@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const NoteColor = ({ anchorEl,updateColor}) => {
+const NoteColor = ({ anchorEl,updateColor,handleClose}) => {
    //console.log("anchorEl",noteObj)
     const classes = useStyles()
     const [selected,setSelected] = useState(1)
@@ -39,7 +39,7 @@ const NoteColor = ({ anchorEl,updateColor}) => {
         <Popover
             open={open}
             anchorEl={anchorEl}
-            //onClose={handleClose}
+            onClose={handleClose}
             anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'right',
@@ -49,7 +49,7 @@ const NoteColor = ({ anchorEl,updateColor}) => {
                 horizontal: 'center',
             }}
         >
-            <Box className={classes.colorDish}>
+            <Box className={classes.colorDish} onMouseLeave={()=>{handleClose()}}>
                 {Color.map((color,index) => {
                     return <Box key={index}  onClick={()=>{   updateNoteColor(color.id)  } }>
                         <Tooltip title={color.label} key={color.name}>

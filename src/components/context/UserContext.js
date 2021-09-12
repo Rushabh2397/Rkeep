@@ -5,11 +5,13 @@ const UserContext = createContext();
 const userReducer = (state, action) => {
     switch (action.type) {
         case 'LOGIN':
-            console.log("paylod Add",action.payload)
+            let user = JSON.parse(localStorage.getItem('notzzUser') )
             return {
                 name: action.payload.name,
                 email : action.payload.email,
-                token : action.payload.token
+                token : action.payload.token,
+                screen : user ? user.screen : 'Notes',
+                view: user ? user.view : 'List'
             };
 
         case 'SIGNUP':
@@ -17,7 +19,9 @@ const userReducer = (state, action) => {
             return {
                 name: action.payload.name,
                 email : action.payload.email,
-                token : action.payload.token
+                token : action.payload.token,
+                screen : 'Notes',
+                view: 'List'
             };    
 
         case 'LOGOUT':
@@ -26,7 +30,14 @@ const userReducer = (state, action) => {
                 email : '',
                 token : ''
             }
-
+         
+        case 'USER_PREFERENCE' :
+            
+            return {
+                ...state,
+                screen : action.payload.screen ? action.payload.screen : state.screen,
+                view: action.payload.view ? action.payload.view : state.view
+            }
 
 
         default:
@@ -39,22 +50,25 @@ const userReducer = (state, action) => {
 let intialState = {
     name : '',
     email : '',
-    token : ''
+    token : '',
+    screen: 'Notes',
+    view : 'List'
 }
 
 export const UserProvider = ({ children }) => {
     let user = JSON.parse(localStorage.getItem('notzzUser') ) || { name : '',email : '',token : ''}
-    console.log("user",user)
     if(user.token){
         intialState.name= user.name
         intialState.email= user.email
         intialState.token= user.token
+        intialState.screen = user.screen
+        intialState.view = user.view
     }
-    const [state, dispatch] = useReducer(userReducer, intialState)
+    const [state, userDispatch] = useReducer(userReducer, intialState)
 
     return (
         <>
-            <UserContext.Provider value={{ user:state,dispatch }}>
+            <UserContext.Provider value={{ user:state,userDispatch }}>
                 {children}
             </UserContext.Provider>
         </>)

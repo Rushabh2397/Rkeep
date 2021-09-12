@@ -35,7 +35,7 @@ const Login = () => {
     const classes = useStyles();
     const [email, setEmail] = useState({ email: '', error: false, errMsg: '' })
     const [password, setPassword] = useState({ password: '', error: false, errMsg: '' })
-    const {dispatch} = useUser()
+    const {userDispatch} = useUser()
     const history = useHistory()
 
     const submit = async () => {
@@ -51,8 +51,8 @@ const Login = () => {
             if(email.errMsg==='' || password.errMsg===''){
                 const res = await userLogin({email:email.email,password:password.password})
                 let user = res.data.data
-                localStorage.setItem('notzzUser',JSON.stringify({name:user.name,email:user.email,token:user.token}))
-                dispatch({type:'Login',payload:user})
+                localStorage.setItem('notzzUser',JSON.stringify({name:user.name,email:user.email,token:user.token,view:'List',screen:'Notes'}))
+                userDispatch({type:'Login',payload:user})
                 history.push('/')
             }
         } catch (error) {
