@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import {  useMediaQuery,useTheme } from "@material-ui/core"
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -11,6 +12,10 @@ import DragHandleIcon from '@material-ui/icons/DragHandle';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Sidebar from '../sidebar/Sidebar'
+import { getAllUserNotes} from '../api'
+import { useUser } from '../context/UserContext'
+import {useNote} from '../context/NoteContext'
+
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -68,22 +73,51 @@ const useStyles = makeStyles((theme) => ({
 
 const Navbar = () => {
     const classes = useStyles();
+    const theme = useTheme();
     const [visible, setVisible] = useState(false);
     const [open, setOpen] = useState(false);
-    const [active,setActive] = useState('Notes')
-
+    const {user} = useUser()
+    const [active,setActive] = useState(user.screen||'Notes')
+    
+    
+    const {dispatch} = useNote()
+    const search = useRef(null)
     const InputProps = {
         className: classes.searchBarz
     }
+
+    const lg = useMediaQuery(theme.breakpoints.down("lg"));
+
+    console.log("lg",lg)
+
     const searchBar = () => {
         console.log("here")
         return <div className={classes.searchBar}>
             <div style={{ position: 'relative' }}>
-                <TextField variant="outlined" type="search" placeholder="Search..." fullWidth InputProps={InputProps} />
-                <ArrowBackIcon style={{ position: 'absolute', zIndex: 101, left: 5, top: 15 }} onClick={() => { setVisible(!visible) }} />
+                <TextField inputRef={search} variant="outlined" type="search" placeholder="Search..." fullWidth InputProps={InputProps} onChange={searchOperation} />
+                <ArrowBackIcon style={{ position: 'absolute', zIndex: 101, left: 5, top: 15 }} onClick={() => { setVisible(!visible); search.current.value=''  }} />
             </div>
 
         </div>
+    }
+
+    const searchOperation =async (value)=>{
+        let obj={}
+        console.log("search",search.current.value)
+        if(user.screen==='Notes'){
+            obj.isActive =1
+            obj.isArchived=0    
+            obj.search = search.current.value
+        }else if(user.screen==='Archive'){
+            obj.isActive =1
+            obj.isArchived=1
+            obj.search = search.current.value
+        } else {
+            obj.isActive =0
+            obj.search = search.current.value
+        }
+        let res = await getAllUserNotes(obj);
+        dispatch({ type: 'GET_ALL_NOTE', payload: res.data.data })
     }
 
     return (
@@ -98,7 +132,7 @@ const Navbar = () => {
                             <Icon className="fa fa-lightbulb" style={{ color: "gold" }} />
                         </IconButton>
                         <Typography variant="h6" className={classes.title}>
-                            {active}
+                            {user.screen}
                         </Typography>
                     </Box>
 
@@ -111,7 +145,7 @@ const Navbar = () => {
 
                     }
                     <Box className={classes.row}>
-                        <TextField className={classes.textField} type="search" variant="outlined" size="small" placeholder="Search" />
+                        <TextField inputRef={search} className={classes.textField} type="search" variant="outlined" size="small" placeholder="Search" onChange={searchOperation}/>
                     </Box>
 
                     <Box>

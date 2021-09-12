@@ -9,7 +9,7 @@ export const getAllUserNotes = (data)=>{
 }
 
 export const deleteUserNote = (data)=>{
-    return axios.post(`${process.env.REACT_APP_BACKEND}user/delete_note`,data)
+    return axios.post(`${process.env.REACT_APP_BACKEND}user/api/delete_note`,data)
 }
 
 export const updateUserNote = (data)=>{

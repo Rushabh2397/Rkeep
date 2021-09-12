@@ -99,6 +99,7 @@ const NewNote = () => {
 
     const handleClickAway = async () => {
         try {
+            console.log("inside handle click away",noteObj)
             setAddNote(!addNote)
             let userNote = noteObj.note
             if (userNote.trim() !== "") {
@@ -110,7 +111,12 @@ const NewNote = () => {
                     is_pinned: noteObj.is_pinned
                 }
                 const res = await addUserNote(newNote)
-                dispatch({ type: 'ADD', payload: res.data.data })
+                console.log("note",noteObj)
+                if(noteObj.is_archived===0){
+                    console.log("inside ")
+                    dispatch({ type: 'ADD', payload: res.data.data })
+                }
+                
             }
 
         } catch (error) {
@@ -123,8 +129,10 @@ const NewNote = () => {
 
     const handleNote = (key) => {
         setNoteObj({
+
             title: key === 'title' ? title.current.value : noteObj.title,
-            note: key === 'note' ? note.current.value : noteObj.note
+            note: key === 'note' ? note.current.value : noteObj.note,
+            is_archived : noteObj.is_archived
         })
     }
 

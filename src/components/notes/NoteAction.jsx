@@ -8,7 +8,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import NoteColor from './NoteColor'
 import { useState } from "react";
 import { useNote } from '../context/NoteContext'
-import { updateUserNote } from '../api'
+import { useUser } from '../context/UserContext'
+import { updateUserNote,deleteUserNote } from '../api'
+import RestoreFromTrashOutlinedIcon from '@material-ui/icons/RestoreFromTrashOutlined';
 
 const useStyles = makeStyles((theme) => ({
     noteAction: {
@@ -28,19 +30,40 @@ const NoteAction = ({ setAddNote, icon, setNoteObj, noteObj, setOpen, updateColo
     const classes = useStyles()
     const [anchorEl, setAnchorEl] = useState(null);
     const { dispatch } = useNote()
+    const { user } = useUser()
     const handleArchive = () => {
         updateArchive()
     }
     const deleteNote = async () => {
         try {
-            const res = await updateUserNote({ note_id: noteObj._id,is_active:0 });
+            const res = await updateUserNote({ note_id: noteObj._id, is_active: 0 });
             dispatch({ type: 'DELETE', payload: noteObj._id })
         } catch (error) {
             console.log("error", error)
         }
     }
 
-    const handleClose = ()=>{
+    const deleteNotePermanently = async ()=>{
+        try {
+            const res = await deleteUserNote({note_id:noteObj._id})
+            dispatch({ type: 'DELETE', payload: noteObj._id })
+        } catch (error) {
+            
+        }
+    }
+
+    const restoreNote = async ()=>{
+        try {
+            const res = updateUserNote({ note_id: noteObj._id, is_active: 1 });
+            dispatch({ type: 'DELETE', payload: noteObj._id })
+        } catch (error) {
+            
+        }
+    }
+
+
+
+    const handleClose = () => {
         setAnchorEl(null)
     }
 
@@ -51,7 +74,7 @@ const NoteAction = ({ setAddNote, icon, setNoteObj, noteObj, setOpen, updateColo
             {/* <Tooltip key="colour" title="Change colour" arrow={true}> */}
             <div >
                 {
-                    icon.palette && <span className={classes.icon} onMouseEnter={(e) => { setAnchorEl(e.currentTarget) }} onClick={(e) => { setAnchorEl(e.currentTarget) }} >
+                    (user.screen === 'Notes' || user.screen === 'Archive') && icon.palette && <span className={classes.icon} onMouseEnter={(e) => { setAnchorEl(e.currentTarget) }} onClick={(e) => { setAnchorEl(e.currentTarget) }} >
 
                         <PaletteOutlinedIcon />
 
@@ -60,13 +83,29 @@ const NoteAction = ({ setAddNote, icon, setNoteObj, noteObj, setOpen, updateColo
                 {/* </Tooltip> */}
                 {
 
-                    icon.archive && <Tooltip key="archive" title="Archive" arrow={true}>
+                    (user.screen === 'Notes' || user.screen === 'Archive') && icon.archive && <Tooltip key="archive" title="Archive" arrow={true}>
 
                         <span className={classes.icon} onClick={() => { handleArchive() }}>
                             {noteObj.is_archived === 1 ? (<UnarchiveOutlinedIcon />) : <ArchiveOutlinedIcon />}
                         </span>
                     </Tooltip>
                 }
+                {
+
+                    user.screen === 'Trash' && <Tooltip key="restore" title="Restore Note" arrow={true}>
+
+                        <span className={classes.icon} onClick={restoreNote }>
+                            <RestoreFromTrashOutlinedIcon fontSize="medium" />
+                        </span>
+                    </Tooltip>
+                }
+                {
+                user.screen === 'Trash' && <Tooltip key="delete" title="Delete Permanently" arrow={true}>
+                    <span onClick={deleteNotePermanently}>
+                    <DeleteOutlineOutlinedIcon />
+                    </span>
+                </Tooltip>
+            }
 
 
             </div>
@@ -85,7 +124,7 @@ const NoteAction = ({ setAddNote, icon, setNoteObj, noteObj, setOpen, updateColo
                 </Tooltip>
             }
             {
-                icon.delete && <Tooltip key="delete" title="Delete" arrow={true}>
+               (user.screen === 'Notes' || user.screen === 'Archive')&& icon.delete && <Tooltip key="delete" title="Delete" arrow={true}>
 
                     <span className={classes.icon} onClick={deleteNote}>
                         <DeleteOutlineOutlinedIcon />

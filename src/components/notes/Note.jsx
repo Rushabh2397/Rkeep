@@ -6,7 +6,8 @@ import { useNote} from '../context/NoteContext'
 import {useUser} from '../context/UserContext'
 import Navabar from '../navabar/Navbar'
 import { Toolbar } from '@material-ui/core';
-
+import Gridview from './GridView'
+import GridView from './GridView';
 
 
 const Note = () => {
@@ -54,7 +55,7 @@ const Note = () => {
         <div>
             <Navabar />
             {user.screen==='Notes' ? <NewNote /> :(<Toolbar/>)}
-            {
+            {/* {
 
                 noteObj.notes && noteObj.notes.length > 0
                     ?
@@ -63,7 +64,8 @@ const Note = () => {
                     })))
                     :
                     (<div> Nothing</div>)
-            }
+            } */}
+            <GridView notz={noteObj.notes} updateNotes={updateNotes}/>
         </div >
     )
 }
