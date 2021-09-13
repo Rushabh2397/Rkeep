@@ -1,11 +1,12 @@
-import { useState} from "react";
-import { Paper} from "@material-ui/core"
+import { useState } from "react";
+import { Paper } from "@material-ui/core"
 import { makeStyles } from '@material-ui/core/styles';
 import TextareaAutosize from 'react-textarea-autosize';
 import NoteAction from './NoteAction'
 import UpdateNote from './UpdateNote'
 import Color from './color.json'
-
+import { useUser } from '../context/UserContext'
+import toast from 'react-hot-toast'
 
 const useStyles = makeStyles((theme) => ({
     noteDisplay: {
@@ -65,68 +66,73 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const NoteListView = ({notz,updateNotes}) => {
+const NoteListView = ({ notz, updateNotes }) => {
 
     const classes = useStyles();
     const [open, setOpen] = useState(false);
-    const noteColor  = Color.find(c=>c.name===notz.color)
+    const noteColor = Color.find(c => c.name === notz.color)
+    const { user } = useUser()
 
-    const updateNote = ()=>{
-        return <UpdateNote notz={notz} open={open} setOpen={setOpen} id={noteColor.id}/>
+    const updateNote = () => {
+        if (user.screen !== 'Trash') {
+            return <UpdateNote notz={notz} open={open} setOpen={setOpen} id={noteColor.id} />
+        } else {
+            setOpen(false)
+            toast.error("You can't edit in trash")
+        }
+
     }
-    
+
 
 
 
     return (
-    
+
         <div className={classes.noteDisplay} >
-            
-                        
-                        <div className={classes.paperContainer} >
-                            <Paper elevation={2} style={{ backgroundColor: Color[noteColor.id-1].color }} >
-                                <TextareaAutosize
-                                    className={classes.textAreaTitle}
-                                    placeholder="Title"
-                                    scrolling="false"
-                                    style={{ backgroundColor: Color[noteColor.id-1].color } }
-                                    value = {notz.title}
-                                    onClick={()=>{setOpen(true)}}
-                                />
-                                <TextareaAutosize
-                                    className={classes.textAreaNote}
-                                    placeholder="Take a note..."
-                                    scrolling="false"
-                                    style={{ backgroundColor: Color[noteColor.id-1].color } }
-                                    value = {notz.note}
-                                    onClick={()=>{setOpen(true)}}
-                                />
-                                <NoteAction
-                                   // setNoteObj={setNote}
-                                    updateColor = {(id)=>{
-                                        console.log("Kupd",id,notz)
-                                        updateNotes({
-                                            _id: notz._id,
-                                            color : Color[id-1].name
-                                        })
-                                    }}
 
-                                    updateArchive = {()=>{
-                                        console.log("notzAr",notz)
-                                        updateNotes({
-                                            _id: notz._id,
-                                            is_archived : notz.is_archived === 1 ? 0 : 1
-                                        })
-                                    }}
-                                    noteObj={notz}
-                                    icon={{ palette: true, archive: true, delete: true }}
-                                    
-                                />
-                            </Paper>
-                        </div>
 
-                    {open && updateNote()}
-            
+            <div className={classes.paperContainer} >
+                <Paper elevation={2} style={{ backgroundColor: Color[noteColor.id - 1].color }} >
+                    <TextareaAutosize
+                        className={classes.textAreaTitle}
+                        placeholder="Title"
+                        scrolling="false"
+                        style={{ backgroundColor: Color[noteColor.id - 1].color }}
+                        value={notz.title}
+                        onClick={() => { setOpen(true) }}
+                    />
+                    <TextareaAutosize
+                        className={classes.textAreaNote}
+                        placeholder="Take a note..."
+                        scrolling="false"
+                        style={{ backgroundColor: Color[noteColor.id - 1].color }}
+                        value={notz.note}
+                        onClick={() => { setOpen(true) }}
+                    />
+                    <NoteAction
+                        // setNoteObj={setNote}
+                        updateColor={(id) => {
+                            updateNotes({
+                                _id: notz._id,
+                                color: Color[id - 1].name
+                            })
+                        }}
+
+                        updateArchive={() => {
+                            updateNotes({
+                                _id: notz._id,
+                                is_archived: notz.is_archived === 1 ? 0 : 1
+                            })
+                        }}
+                        noteObj={notz}
+                        icon={{ palette: true, archive: true, delete: true }}
+
+                    />
+                </Paper>
+            </div>
+
+            {open && updateNote()}
+
         </div>
 
     )

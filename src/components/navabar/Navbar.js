@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {  useMediaQuery,useTheme } from "@material-ui/core"
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -74,7 +73,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Navbar = () => {
     const classes = useStyles();
-    const theme = useTheme();
     const [visible, setVisible] = useState(false);
     const [open, setOpen] = useState(false);
     const {user,userDispatch} = useUser()
@@ -96,7 +94,6 @@ const Navbar = () => {
    
 
     const searchBar = () => {
-        console.log("here")
         return <div className={classes.searchBar}>
             <div style={{ position: 'relative' }}>
                 <TextField inputRef={search} variant="outlined" type="search" placeholder="Search..." fullWidth InputProps={InputProps} onChange={searchOperation} />
@@ -108,7 +105,6 @@ const Navbar = () => {
 
     const searchOperation =async (value)=>{
         let obj={}
-        console.log("search",search.current.value)
         if(user.screen==='Notes'){
             obj.isActive =1
             obj.isArchived=0    

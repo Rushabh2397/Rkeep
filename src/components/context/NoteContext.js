@@ -5,21 +5,18 @@ const NoteContext = createContext();
 const noteReducer = (state, action) => {
     switch (action.type) {
         case 'ADD':
-            console.log("paylod Add",action.payload)
             return {
                 notes :[action.payload,...state.notes],
                 noteCount : state.noteCount + 1
             };
 
         case 'GET_ALL_NOTE':
-            console.log("GET_ALL_NOTE",action.payload)
             return {
                 notes : action.payload.notes,
                 noteCount : action.payload.noteCount
             };    
 
         case 'UPDATE':
-            console.log("action.pay",action.payload)
             return {
                 notes : state.notes.map(note=>{
                     if(note._id === action.payload._id){
@@ -34,7 +31,6 @@ const noteReducer = (state, action) => {
             }
 
         case 'DELETE':
-            console.log("action.payload",action.payload,state.notes)
             return {
                 notes : state.notes.filter(note=>note._id!==action.payload),
                 noteCount : state.noteCount -1
@@ -42,7 +38,6 @@ const noteReducer = (state, action) => {
 
 
         default:
-            console.log("paylod default",action.payload)
             return state
 
     }

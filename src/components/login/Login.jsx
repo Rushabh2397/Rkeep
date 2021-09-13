@@ -4,6 +4,9 @@ import { useState } from "react";
 import { useHistory } from "react-router";
 import { userLogin } from '../api'
 import { useUser } from '../context/UserContext'
+import Loader from '../Loader/Loader'
+import toast from 'react-hot-toast'
+
 const useStyles = makeStyles((theme) => ({
     loginFormContainer:{
        display:"flex",
@@ -35,13 +38,13 @@ const Login = () => {
     const classes = useStyles();
     const [email, setEmail] = useState({ email: '', error: false, errMsg: '' })
     const [password, setPassword] = useState({ password: '', error: false, errMsg: '' })
+    const [loader,setLoader] = useState(false)
     const {userDispatch} = useUser()
     const history = useHistory()
 
     const submit = async () => {
         try {
             if (email.email==='') {
-                console.log("email",email)
                 setEmail({ ...email, error: true, errMsg: 'Email is required.' })
             }
             if (password.password === '') {
@@ -49,14 +52,18 @@ const Login = () => {
             }
     
             if(email.errMsg==='' || password.errMsg===''){
+                setLoader(true)
                 const res = await userLogin({email:email.email,password:password.password})
                 let user = res.data.data
                 localStorage.setItem('notzzUser',JSON.stringify({name:user.name,email:user.email,token:user.token,view:'List',screen:'Notes'}))
                 userDispatch({type:'Login',payload:user})
+                toast.success(res.data.message)
                 history.push('/')
             }
         } catch (error) {
-            console.log("error",error)
+            toast.error(error.response.data.message)
+        } finally{
+            setLoader(false)
         }
         
     }
@@ -105,6 +112,7 @@ const Login = () => {
                     </form>
                 </Paper>
             </div>
+            <Loader visible={loader}/>
         </div>
     )
 }

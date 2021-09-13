@@ -15,7 +15,6 @@ const userReducer = (state, action) => {
             };
 
         case 'SIGNUP':
-            console.log("GET_ALL_NOTE",action.payload)
             return {
                 name: action.payload.name,
                 email : action.payload.email,
@@ -41,7 +40,6 @@ const userReducer = (state, action) => {
 
 
         default:
-            console.log("paylod default",action.payload)
             return state
 
     }

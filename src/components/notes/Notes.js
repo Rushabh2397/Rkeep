@@ -103,7 +103,6 @@ const Notes = () => {
             <div className={classes.notesContainer}>
 
                 <Box className={classes.notes} >
-                    {console.log(note)}
                     <TextField className={show ? ' ' : classes.hide} size="small" variant="outlined" placeholder="Take a note... " fullWidth onClick={() => { setShow(false) }} />
 
                     <Box className={show ? classes.hide : `${classes.row} ${classes.noteCard}`}>

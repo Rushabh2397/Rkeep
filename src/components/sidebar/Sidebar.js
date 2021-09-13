@@ -1,7 +1,6 @@
 import { Drawer, List, ListItemIcon, ListItemText, ListItem, Toolbar } from "@material-ui/core"
 import { makeStyles } from '@material-ui/core/styles';
 import NoteOutlinedIcon from '@material-ui/icons/NoteOutlined';
-//import CreateIcon from '@material-ui/icons/Create';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import ArchiveOutlinedIcon from '@material-ui/icons/ArchiveOutlined';
 import clsx from 'clsx';
@@ -73,7 +72,6 @@ const Sidebar = ({ open, setOpen, active, setActive }) => {
       getAllNotes({ isActive: 1, isArchived: 0 })
       localStorage.setItem('notzzUser', JSON.stringify({ ...user, screen: 'Notes' }))
     } else if (key === "Archive") {
-      console.log("Archive")
       setActive('Archive')
       userDispatch({ type: 'USER_PREFERENCE', payload: { screen: 'Archive' } })
       getAllNotes({ isActive: 1, isArchived: 1 })
@@ -88,7 +86,6 @@ const Sidebar = ({ open, setOpen, active, setActive }) => {
 
   const getAllNotes = async (obj) => {
     try {
-      console.log("inside side bar getAllNotes",obj)
         let res = await getAllUserNotes(obj);
         dispatch({ type: 'GET_ALL_NOTE', payload: res.data.data })
     } catch (error) {

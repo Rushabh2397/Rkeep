@@ -5,13 +5,15 @@ import TextareaAutosize from 'react-textarea-autosize';
 import UpdateNote from './UpdateNote'
 import { useState } from 'react';
 import NoteAction from './NoteAction'
-
-
+import { useUser } from '../context/UserContext'
+import toast from 'react-hot-toast'
 
 const useStyles = makeStyles(theme => ({
     myMasonryGrid: {
         display: "-webkit-box",
+        // eslint-disable-next-line
         display: "-ms-flexbox",
+        // eslint-disable-next-line
         display: "flex",
         width: "auto",
     },
@@ -73,9 +75,16 @@ const GridViewSub = ({notz,updateNotes}) => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const noteColor  = Color.find(c=>c.name===notz.color)
+    const {user} = useUser()
 
     const updateNote = ()=>{
-        return <UpdateNote notz={notz} open={open} setOpen={setOpen} id={noteColor.id}/>
+        
+        if (user.screen !== 'Trash') {
+            return <UpdateNote notz={notz} open={open} setOpen={setOpen} id={noteColor.id}/>
+        } else {
+            setOpen(false)
+            toast.error("You can't edit in trash")
+        }
     }
      
     return (
@@ -103,7 +112,6 @@ const GridViewSub = ({notz,updateNotes}) => {
                     <NoteAction
                         // setNoteObj={setNote}
                         updateColor={(id) => {
-                            //console.log("Kupd", id, notz)
                             updateNotes({
                                 _id: notz._id,
                                 color: Color[id - 1].name
@@ -111,7 +119,6 @@ const GridViewSub = ({notz,updateNotes}) => {
                         }}
 
                         updateArchive={() => {
-                            console.log("notzAr", notz)
                             updateNotes({
                                 _id: notz._id,
                                 is_archived: notz.is_archived === 1 ? 0 : 1

@@ -7,7 +7,9 @@ import { useState, useEffect } from 'react';
 const useStyles = makeStyles(theme => ({
     myMasonryGrid: {
         display: "-webkit-box",
+        // eslint-disable-next-line
         display: "-ms-flexbox",
+        // eslint-disable-next-line
         display: "flex",
         width: "auto",
         padding: "0 8.5rem",
@@ -64,8 +66,8 @@ const GridView = ({ notz, updateNotes }) => {
             columnClassName={classes.myMasonryGridColumn}
         >
             {
-                notz.map(note => {
-                    return <GridViewSub notz={note} updateNotes={updateNotes} />
+                notz.map((note,index) => {
+                    return <GridViewSub key={index} notz={note} updateNotes={updateNotes} />
                 })
             }
         </Masonry>

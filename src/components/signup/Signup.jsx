@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useHistory } from "react-router";
 import { userSignup } from '../api'
 import { useUser } from '../context/UserContext'
+import Loader from '../Loader/Loader'
+import toast from 'react-hot-toast'
 
 const useStyles = makeStyles((theme) => ({
     signupFormContainer: {
@@ -44,6 +46,7 @@ const Signup = () => {
     const [name, setName] = useState({ name: '', error: false, errMsg: '' })
     const [email, setEmail] = useState({ email: '', error: false, errMsg: '' })
     const [password, setPassword] = useState({ password: '', error: false, errMsg: '' })
+    const [loader,setLoader] = useState(false)
     const {userDispatch} = useUser()
     const history = useHistory()
 
@@ -53,7 +56,6 @@ const Signup = () => {
                 setName({ ...name, error: true, errMsg: 'Name is required.' })
             }
             if (email.email==='') {
-                console.log("email",email)
                 setEmail({ ...email, error: true, errMsg: 'Email is required.' })
             }
             if (password.password === '') {
@@ -61,14 +63,18 @@ const Signup = () => {
             }
     
             if(name.errMsg==='' || email.errMsg==='' || password.errMsg===''){
+                setLoader(true)
                 const res = await userSignup({name:name.name,email:email.email,password:password.password})
                 let user = res.data.data
+                toast.success(res.data.message)
                 localStorage.setItem('notzzUser',JSON.stringify({name:user.name,email:user.email,token:user.token}))
                 userDispatch({type:'SIGNUP',payload:user})
                 history.push('/')
             }
         } catch (error) {
-            console.log("error",error)
+            toast.error(error.response.data.message)
+        } finally {
+            setLoader(false)
         }
         
     }
@@ -128,6 +134,7 @@ const Signup = () => {
                     </form>
                 </Paper>
             </div>
+            <Loader visible={loader}/>
         </div>
     )
 }

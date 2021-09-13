@@ -9,8 +9,9 @@ import NoteColor from './NoteColor'
 import { useState } from "react";
 import { useNote } from '../context/NoteContext'
 import { useUser } from '../context/UserContext'
-import { updateUserNote,deleteUserNote } from '../api'
+import { updateUserNote, deleteUserNote } from '../api'
 import RestoreFromTrashOutlinedIcon from '@material-ui/icons/RestoreFromTrashOutlined';
+import toast from 'react-hot-toast'
 
 const useStyles = makeStyles((theme) => ({
     noteAction: {
@@ -37,27 +38,37 @@ const NoteAction = ({ setAddNote, icon, setNoteObj, noteObj, setOpen, updateColo
     const deleteNote = async () => {
         try {
             const res = await updateUserNote({ note_id: noteObj._id, is_active: 0 });
-            dispatch({ type: 'DELETE', payload: noteObj._id })
+            if (res.data.status === 'success') {
+                dispatch({ type: 'DELETE', payload: noteObj._id })
+                toast.success('Note moved to trash.')
+            }
+
         } catch (error) {
-            console.log("error", error)
+            toast.error('Something went wrong plzz try again.')
         }
     }
 
-    const deleteNotePermanently = async ()=>{
+    const deleteNotePermanently = async () => {
         try {
-            const res = await deleteUserNote({note_id:noteObj._id})
+            const res = await deleteUserNote({ note_id: noteObj._id })
             dispatch({ type: 'DELETE', payload: noteObj._id })
+            toast.success(res.data.message)
+
         } catch (error) {
-            
+            toast.error('Something went wrong plzz try again.')
         }
     }
 
-    const restoreNote = async ()=>{
+    const restoreNote = async () => {
         try {
             const res = updateUserNote({ note_id: noteObj._id, is_active: 1 });
-            dispatch({ type: 'DELETE', payload: noteObj._id })
-        } catch (error) {
+            if((await res).data.status==='success'){
+                dispatch({ type: 'DELETE', payload: noteObj._id })
+                toast.success('Note restored.')
+            }
             
+        } catch (error) {
+            toast.error('Something went wrong plzz try again.')
         }
     }
 
@@ -94,18 +105,18 @@ const NoteAction = ({ setAddNote, icon, setNoteObj, noteObj, setOpen, updateColo
 
                     user.screen === 'Trash' && <Tooltip key="restore" title="Restore Note" arrow={true}>
 
-                        <span className={classes.icon} onClick={restoreNote }>
+                        <span className={classes.icon} onClick={restoreNote}>
                             <RestoreFromTrashOutlinedIcon fontSize="medium" />
                         </span>
                     </Tooltip>
                 }
                 {
-                user.screen === 'Trash' && <Tooltip key="delete" title="Delete Permanently" arrow={true}>
-                    <span onClick={deleteNotePermanently}>
-                    <DeleteOutlineOutlinedIcon />
-                    </span>
-                </Tooltip>
-            }
+                    user.screen === 'Trash' && <Tooltip key="delete" title="Delete Permanently" arrow={true}>
+                        <span onClick={deleteNotePermanently}>
+                            <DeleteOutlineOutlinedIcon />
+                        </span>
+                    </Tooltip>
+                }
 
 
             </div>
@@ -124,7 +135,7 @@ const NoteAction = ({ setAddNote, icon, setNoteObj, noteObj, setOpen, updateColo
                 </Tooltip>
             }
             {
-               (user.screen === 'Notes' || user.screen === 'Archive')&& icon.delete && <Tooltip key="delete" title="Delete" arrow={true}>
+                (user.screen === 'Notes' || user.screen === 'Archive') && icon.delete && <Tooltip key="delete" title="Delete" arrow={true}>
 
                     <span className={classes.icon} onClick={deleteNote}>
                         <DeleteOutlineOutlinedIcon />

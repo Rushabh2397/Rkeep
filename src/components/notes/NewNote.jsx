@@ -6,7 +6,7 @@ import NoteAction from './NoteAction'
 import { addUserNote } from '../api'
 import { useNote } from '../context/NoteContext'
 import Color from './color.json'
-
+import toast from 'react-hot-toast'
 
 const useStyles = makeStyles((theme) => ({
     noteDisplay: {
@@ -99,7 +99,6 @@ const NewNote = () => {
 
     const handleClickAway = async () => {
         try {
-            console.log("inside handle click away",noteObj)
             setAddNote(!addNote)
             let userNote = noteObj.note
             if (userNote.trim() !== "") {
@@ -111,16 +110,15 @@ const NewNote = () => {
                     is_pinned: noteObj.is_pinned
                 }
                 const res = await addUserNote(newNote)
-                console.log("note",noteObj)
+                toast.success(res.data.message)
                 if(noteObj.is_archived===0){
-                    console.log("inside ")
                     dispatch({ type: 'ADD', payload: res.data.data })
                 }
                 
             }
 
         } catch (error) {
-            console.log("error", error)
+            toast.error('Something went wrong plz try again.')
         } finally {
             setNoteObj({ title: '', note: '', is_archived: false, is_pinned: false })
             setSelectedColor(1)

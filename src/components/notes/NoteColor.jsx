@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
 
 
 const NoteColor = ({ anchorEl,updateColor,handleClose}) => {
-   //console.log("anchorEl",noteObj)
     const classes = useStyles()
     const [selected,setSelected] = useState(1)
 

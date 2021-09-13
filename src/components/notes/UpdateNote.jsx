@@ -6,7 +6,10 @@ import TextareaAutosize from 'react-textarea-autosize';
 import NoteAction from './NoteAction'
 import { updateUserNote,getAllUserNotes } from '../api'
 import { useNote } from '../context/NoteContext'
+import { useUser } from '../context/UserContext'
 import Color from './color.json'
+import toast from 'react-hot-toast'
+
 const useStyles = makeStyles((theme) => ({
 
     paperContainer: {
@@ -74,6 +77,7 @@ const UpdateNote = ({ open, notz, setOpen,id }) => {
     const title = useRef(null);
     const noteRef = useRef(null);
     const { dispatch } = useNote()
+    const {user} = useUser()
     
     const [selectedColor, setSelectedColor] = useState(id)
 
@@ -108,11 +112,11 @@ const UpdateNote = ({ open, notz, setOpen,id }) => {
 
     const getAllNotes = async () => {
         try {
-            console.log("getAllNotes")
-            let res = await getAllUserNotes({ isActive: 1, isArchived: 0 });
+            let obj = user.screen==='Notes' ? { isActive: 1, isArchived: 0 } : { isActive: 1, isArchived: 1 }
+            let res = await getAllUserNotes(obj);
             dispatch({ type: 'GET_ALL_NOTE', payload: res.data.data })
         } catch (error) {
-
+            toast.error('Something went wrong plzz try again.')
         }
 
     }
@@ -121,9 +125,10 @@ const UpdateNote = ({ open, notz, setOpen,id }) => {
             setOpen(false)
             const res = await updateUserNote({ note_id: note._id, title: note.title, note: note.note, is_archived: note.is_archived,color:Color[selectedColor - 1].name })
             // dispatch({ type: 'UPDATE', payload: note })
+            toast.success(res.data.message)
             getAllNotes()
         } catch (error) {
-            console.log("error", error)
+            toast.error('Something went wrong plzz try again.')
         }
 
     }
@@ -141,7 +146,6 @@ const UpdateNote = ({ open, notz, setOpen,id }) => {
 
 
                 <div >
-                    {console.log('notz', notz)}
                     <Paper elevation={2} style={{ backgroundColor: Color[selectedColor - 1].color }} >
                         <TextareaAutosize
                             className={classes.textAreaTitle}

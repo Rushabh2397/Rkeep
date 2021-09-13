@@ -1,19 +1,20 @@
 import NewNote from './NewNote'
 import NoteListView from './NoteListView'
 import { getAllUserNotes, updateUserNote } from '../api'
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNote} from '../context/NoteContext'
 import {useUser} from '../context/UserContext'
 import Navabar from '../navabar/Navbar'
 import { Toolbar } from '@material-ui/core';
-import Gridview from './GridView'
 import GridView from './GridView';
-
+import Loader from '../Loader/Loader'
+import Empty from './Empty'
 
 const Note = () => {
 
     const { noteObj, dispatch } = useNote()
     const {user} = useUser()
+    const [loader,setLoader] = useState(false)
 
     const updateNotes = async (note) => {
         try {
@@ -29,6 +30,7 @@ const Note = () => {
     }
     const getAllNotes = async () => {
         try {
+            setLoader(true)
             let obj={}
             if(user.screen==='Notes'){
                 obj.isActive =1
@@ -43,6 +45,8 @@ const Note = () => {
             dispatch({ type: 'GET_ALL_NOTE', payload: res.data.data })
         } catch (error) {
 
+        } finally{
+            setLoader(false)
         }
 
     }
@@ -64,13 +68,13 @@ const Note = () => {
                         return <NoteListView key={index} notz={note} updateNotes={updateNotes} />
                     })))
                     :
-                    (<div> Nothing</div>)
+                    ( <Empty/>)
                 ) :
                 (
-                    noteObj.notes && noteObj.notes.length > 0 ?   <GridView notz={noteObj.notes} updateNotes={updateNotes}/>:(<div></div>)
+                    noteObj.notes && noteObj.notes.length > 0 ?   <GridView notz={noteObj.notes} updateNotes={updateNotes}/>:( <Empty/>)
                 )
             } 
-            
+            <Loader visible={loader}/>
         </div >
     )
 }
