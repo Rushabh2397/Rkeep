@@ -1,7 +1,7 @@
 import { Paper, TextField, Button, Typography, Link } from "@material-ui/core"
 import { makeStyles } from '@material-ui/core/styles';
 import { useState } from "react";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import { userSignup } from '../api'
 import { useUser } from '../context/UserContext'
 import Loader from '../Loader/Loader'
@@ -98,7 +98,7 @@ const Signup = () => {
                         <div className={classes.textField}>
                             <TextField
                                 placeholder="Name"
-                                error={name.error}
+                                error={name.error ? true : false}
                                 id="standard-error-helper-text"
                                 helperText={name.error ? name.errMsg : ''}
                                 fullWidth
@@ -108,7 +108,7 @@ const Signup = () => {
                         <div className={classes.textField}>
                             <TextField
                                 placeholder="Email"
-                                error={email.error}
+                                error={email.error ? true : false}
                                 id="standard-error-helper-text"
                                 helperText={email.error ? email.errMsg : ''}
                                 onChange={(e) => { handleField(e,'email')}}
@@ -118,7 +118,7 @@ const Signup = () => {
                             <TextField
                                 type="password"
                                 placeholder="Password"
-                                error={password.error}
+                                error={password.error ? true : false}
                                 id="standard-error-helper-text"
                                 helperText={password.error ? password.errMsg : ''}
                                 onChange={(e) => { handleField(e,'password') }}

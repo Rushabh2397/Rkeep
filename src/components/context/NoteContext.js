@@ -7,13 +7,15 @@ const noteReducer = (state, action) => {
         case 'ADD':
             return {
                 notes :[action.payload,...state.notes],
-                noteCount : state.noteCount + 1
+                noteCount : state.noteCount + 1,
+                totalNotes : state.totalNotes - 1
             };
 
         case 'GET_ALL_NOTE':
             return {
                 notes : action.payload.notes,
-                noteCount : action.payload.noteCount
+                noteCount : action.payload.noteCount,
+                totalNotes : action.payload.totalNotes
             };    
 
         case 'UPDATE':
@@ -33,7 +35,8 @@ const noteReducer = (state, action) => {
         case 'DELETE':
             return {
                 notes : state.notes.filter(note=>note._id!==action.payload),
-                noteCount : state.noteCount -1
+                noteCount : state.noteCount -1,
+                totalNotes: state.totalNotes -1
             }
 
 
@@ -45,7 +48,8 @@ const noteReducer = (state, action) => {
 
 let intialState = {
     notes: [],
-    noteCout : 0
+    noteCout : 0,
+    totalNotes:0
 }
 
 export const NoteProvider = ({ children }) => {

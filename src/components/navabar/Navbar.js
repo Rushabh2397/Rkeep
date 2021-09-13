@@ -1,20 +1,21 @@
-import React, { useRef, useState } from 'react';
+import React, {  useRef, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import { Box, Icon, TextField } from '@material-ui/core';
+import { Box, Icon, TextField,Avatar } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
-import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
+//import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Sidebar from '../sidebar/Sidebar'
 import { getAllUserNotes} from '../api'
 import { useUser } from '../context/UserContext'
 import {useNote} from '../context/NoteContext'
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
+import Profile from './Profile'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -77,7 +78,7 @@ const Navbar = () => {
     const [open, setOpen] = useState(false);
     const {user,userDispatch} = useUser()
     const [active,setActive] = useState(user.screen||'Notes')
-    
+    const [anchorEl, setAnchorEl] = useState(null);
     
     const {dispatch} = useNote()
     const search = useRef(null)
@@ -85,6 +86,9 @@ const Navbar = () => {
         className: classes.searchBarz
     }
     
+    const handleClose = () => {
+        setAnchorEl(null)
+    }
 
     const handleView  =()=>{
         let view = user.view === 'List' ? 'Grid' : 'List'
@@ -151,11 +155,13 @@ const Navbar = () => {
 
                     <Box>
                         <IconButton className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleView}>
-                         {  user.view!=='List' ? <DragHandleIcon fontSize="large" /> : (<ViewComfyIcon fontSize="large"/>)}
+                         {  user.view!=='List' ? <DragHandleIcon fontSize="large" style={{color:'gray',fontSize:"2.5rem"}} /> : (<ViewComfyIcon fontSize="large" style={{color:'gray'}}/>)}
                         </IconButton>
 
                         <IconButton className={classes.menuButton} color="inherit" aria-label="menu">
-                            <AccountCircleOutlinedIcon fontSize="large"/>
+                            {/* <AccountCircleOutlinedIcon fontSize="large"/> */}
+                            <Avatar src="/broken-image.jpg" onMouseEnter={(e) => { setAnchorEl(e.currentTarget) }} onClick={(e) => { setAnchorEl(e.currentTarget) }}/>
+
                         </IconButton>
                     </Box>
 
@@ -163,6 +169,7 @@ const Navbar = () => {
                 {visible && searchBar()}
             </AppBar>
             <Sidebar open={open} setOpen={setOpen} active={active} setActive={setActive} />
+            <Profile anchorEl={anchorEl} handleClose={handleClose} />
         </div>
 
     )

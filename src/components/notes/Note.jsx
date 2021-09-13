@@ -42,17 +42,20 @@ const Note = () => {
                 obj.isActive =0
             }
             let res = await getAllUserNotes(obj);
+            setLoader(false)
             dispatch({ type: 'GET_ALL_NOTE', payload: res.data.data })
         } catch (error) {
-
-        } finally{
             setLoader(false)
-        }
+        } 
+            
 
     }
 
     useEffect(() => {
-        getAllNotes()
+        getAllNotes();
+        return ()=>{
+            setLoader(null)
+        }
         // eslint-disable-next-line
     }, [])
     return (
