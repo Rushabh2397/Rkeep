@@ -1,7 +1,7 @@
 import { Paper, TextField, Button, Typography} from "@material-ui/core"
 import { makeStyles } from '@material-ui/core/styles';
 import { useState } from "react";
-import { useHistory,Link} from "react-router-dom";
+import {useHistory,Link} from 'react-router-dom'
 import { userLogin } from '../api'
 import { useUser } from '../context/UserContext'
 import Loader from '../Loader/Loader'
@@ -55,9 +55,9 @@ const Login = () => {
                 setLoader(true)
                 const res = await userLogin({email:email.email,password:password.password})
                 let user = res.data.data
+                toast.success(res.data.message)
                 localStorage.setItem('notzzUser',JSON.stringify({name:user.name,email:user.email,token:user.token,view:'List',screen:'Notes'}))
                 userDispatch({type:'Login',payload:user})
-                toast.success(res.data.message)
                 setLoader(false)
                 history.push('/')
             }
