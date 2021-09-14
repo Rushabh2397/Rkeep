@@ -73,6 +73,7 @@ const Signup = () => {
                 history.push('/')
             }
         } catch (error) {
+            setLoader(false)
             toast.error(error.response.data.message)
         } 
         
