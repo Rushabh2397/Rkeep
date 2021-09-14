@@ -1,7 +1,7 @@
-import { Paper, TextField, Button, Typography, Link } from "@material-ui/core"
+import { Paper, TextField, Button, Typography } from "@material-ui/core"
 import { makeStyles } from '@material-ui/core/styles';
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory ,Link} from "react-router-dom";
 import { userSignup } from '../api'
 import { useUser } from '../context/UserContext'
 import Loader from '../Loader/Loader'
@@ -129,7 +129,7 @@ const Signup = () => {
                             </Button>
 
                         </div>
-                        <Typography style={{ marginBottom: "0.2rem", marginTop: "0.2rem" }} variant="subtitle2" >Already have account ? <Link href="/login" >Signin</Link> </Typography>
+                        <Typography style={{ marginBottom: "0.2rem", marginTop: "0.2rem" }} variant="subtitle2" >Already have account ? <Link to="/login" >Signin</Link> </Typography>
                     </form>
                 </Paper>
             </div>
