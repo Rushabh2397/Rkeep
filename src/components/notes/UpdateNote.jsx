@@ -9,6 +9,8 @@ import { useNote } from '../context/NoteContext'
 import { useUser } from '../context/UserContext'
 import Color from './color.json'
 import toast from 'react-hot-toast'
+import StarBorderOutlinedIcon from '@material-ui/icons/StarBorderOutlined';
+import StarOutlinedIcon from '@material-ui/icons/StarOutlined';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -66,6 +68,14 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.up('md')]: {
             padding: "8px 13px"
         }
+    },
+    pinIcon: {
+        position: "absolute",
+        right: "1.5rem",
+        top: "8px"
+    },
+    paper:{
+        position:'relative'
     }
 
 
@@ -96,7 +106,8 @@ const UpdateNote = ({ open, notz, setOpen,id }) => {
     const updateArchive = ()=>{
         setNote({
             ...note,
-            is_archived : note.is_archived===1 ? 0:1
+            is_archived : note.is_archived===1 ? 0:1,
+            is_pinned: note.is_archived === 0 ? 0 : note.is_pinned
         })
     }
 
@@ -107,6 +118,19 @@ const UpdateNote = ({ open, notz, setOpen,id }) => {
             note: key === 'note' ? noteRef.current.value : note.note,
             is_archived: note.is_archived,
             is_pinned : note.is_pinned
+        })
+    }
+
+    const handlePinnedNote = (note_id) => {
+        // updateNotes({
+        //     _id: note_id,
+        //     is_pinned: note.is_pinned === 1 ? 0 : 1,
+        //     is_archived: note.is_pinned === 0 ? 0 : note.is_archived
+        // })
+        setNote({
+            ...note,
+            is_pinned: notz.is_pinned === 1 ? 0 : 1,
+            is_archived: notz.is_pinned === 0 ? 0 : notz.is_archived
         })
     }
 
@@ -123,7 +147,7 @@ const UpdateNote = ({ open, notz, setOpen,id }) => {
     const handleClickAway = async () => {
         try {
             setOpen(false)
-            const res = await updateUserNote({ note_id: note._id, title: note.title, note: note.note, is_archived: note.is_archived,color:Color[selectedColor - 1].name })
+            const res = await updateUserNote({ note_id: note._id, title: note.title, note: note.note,is_pinned:note.is_pinned, is_archived: note.is_archived,color:Color[selectedColor - 1].name })
             // dispatch({ type: 'UPDATE', payload: note })
             toast.success(res.data.message)
             getAllNotes()
@@ -146,7 +170,7 @@ const UpdateNote = ({ open, notz, setOpen,id }) => {
 
 
                 <div >
-                    <Paper elevation={2} style={{ backgroundColor: Color[selectedColor - 1].color }} >
+                    <Paper className={classes.paper} elevation={2} style={{ backgroundColor: Color[selectedColor - 1].color }} >
                         <TextareaAutosize
                             className={classes.textAreaTitle}
                             placeholder="Title"
@@ -174,6 +198,7 @@ const UpdateNote = ({ open, notz, setOpen,id }) => {
                             updateColor={updateColor}
                             updateArchive={updateArchive}
                         />
+                        {user.screen !== 'Trash' && <div onClick={() => { handlePinnedNote(note._id) }} className={classes.pinIcon}>{note.is_pinned ? <StarOutlinedIcon /> : <StarBorderOutlinedIcon />}</div>}
                     </Paper>
                 </div>
             </ClickAwayListener>

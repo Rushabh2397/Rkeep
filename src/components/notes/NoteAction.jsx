@@ -37,7 +37,7 @@ const NoteAction = ({ setAddNote, icon, setNoteObj, noteObj, setOpen, updateColo
     }
     const deleteNote = async () => {
         try {
-            const res = await updateUserNote({ note_id: noteObj._id, is_active: 0 });
+            const res = await updateUserNote({ note_id: noteObj._id, is_active: 0,is_archived:0,is_pinned:0 });
             if (res.data.status === 'success') {
                 dispatch({ type: 'DELETE', payload: noteObj._id })
                 toast.success('Note moved to trash.')

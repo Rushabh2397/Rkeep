@@ -7,8 +7,8 @@ import UpdateNote from './UpdateNote'
 import Color from './color.json'
 import { useUser } from '../context/UserContext'
 import toast from 'react-hot-toast'
-//import StarBorderOutlinedIcon from '@material-ui/icons/StarBorderOutlined';
-//import StarOutlinedIcon from '@material-ui/icons/StarOutlined';
+import StarBorderOutlinedIcon from '@material-ui/icons/StarBorderOutlined';
+import StarOutlinedIcon from '@material-ui/icons/StarOutlined';
 
 const useStyles = makeStyles((theme) => ({
     noteDisplay: {
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: theme.spacing(5),
     },
     paperContainer: {
-       // position:'relative',
+        position: 'relative',
         width: "80%",
         margin: "0 auto",
         [theme.breakpoints.up('sm')]: {
@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
     },
     pinIcon: {
         position: "absolute",
-        right: "8px",
+        right: "1.5rem",
         top: "8px"
     }
 
@@ -90,14 +90,14 @@ const NoteListView = ({ notz, updateNotes }) => {
         }
 
     }
-   
-    // const handlePinnedNote = (note_id)=>{
-    //     console.log("inside handle",notz.is_pinned)
-    //     updateNotes({
-    //             _id: note_id,
-    //             is_pinned: notz.is_pinned === 1 ? 0 : 1
-    //     })
-    // }
+
+    const handlePinnedNote = (note_id) => {
+        updateNotes({
+            _id: note_id,
+            is_pinned: notz.is_pinned === 1 ? 0 : 1,
+            is_archived: notz.is_pinned === 0 ? 0 : notz.is_archived
+        })
+    }
 
 
 
@@ -136,14 +136,15 @@ const NoteListView = ({ notz, updateNotes }) => {
                         updateArchive={() => {
                             updateNotes({
                                 _id: notz._id,
-                                is_archived: notz.is_archived === 1 ? 0 : 1
+                                is_archived: notz.is_archived === 1 ? 0 : 1,
+                                is_pinned: notz.is_archived === 0 ? 0 : notz.is_pinned
                             })
                         }}
                         noteObj={notz}
                         icon={{ palette: true, archive: true, delete: true }}
 
                     />
-                    {/* <div onClick={()=>{handlePinnedNote(notz._id)}} className={classes.pinIcon}>{notz.is_pinned ? <StarOutlinedIcon /> : <StarBorderOutlinedIcon />}</div> */}
+                    {user.screen !== 'Trash' && <div onClick={() => { handlePinnedNote(notz._id) }} className={classes.pinIcon}>{notz.is_pinned ? <StarOutlinedIcon /> : <StarBorderOutlinedIcon />}</div>}
                 </Paper>
             </div>
 

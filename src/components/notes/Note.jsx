@@ -9,13 +9,46 @@ import { Toolbar } from '@material-ui/core';
 import GridView from './GridView';
 import Loader from '../Loader/Loader'
 import Empty from './Empty'
+import { makeStyles } from '@material-ui/core/styles';
+
+
+
+const useStyles = makeStyles((theme) => ({
+    noteDisplay: {
+        marginLeft: theme.spacing(8),
+        paddingTop: theme.spacing(3),
+        
+    },
+    noteText: {
+        width: "80%",
+        margin: "0 auto",    
+        [theme.breakpoints.up('sm')]: {
+            width: "70%"
+        },
+        [theme.breakpoints.up('md')]: {
+            width: "60%"
+        }
+    },
+    gridPinnedNotes: {
+        padding: "0 8.5rem",
+        marginLeft: theme.spacing(6),
+        marginTop: "1.5rem",
+        [theme.breakpoints.down('md')]: {
+            padding:"0 2.9rem"
+        },
+    }
+
+
+}))
 
 const Note = () => {
-
+    const classes = useStyles();
     const { noteObj, dispatch } = useNote()
     const { user } = useUser()
     const [loader, setLoader] = useState(false)
-    
+    const pinnedNotes = noteObj.notes.length > 0 ? noteObj.notes.filter(note => note.is_pinned === 1) : []
+    const otherNotes = noteObj.notes.length > 0 ? noteObj.notes.filter(note => note.is_pinned === 0) : []
+
     const updateNotes = async (note) => {
         try {
             note.note_id = note._id
@@ -65,19 +98,56 @@ const Note = () => {
             {
                 user.view === 'List' ?
 
-                    (noteObj.notes && noteObj.notes.length > 0
-                        ?
-                        (
-                            
-                            (noteObj.notes.map((note, index) => {
-                                return <NoteListView key={index} notz={note} updateNotes={updateNotes} />
-                            }))
-                        )
-                        :
-                        (<Empty />)
+                    (pinnedNotes.length > 0
+                        &&
+                        <div>
+                            <div className={classes.noteDisplay}><div className={classes.noteText}>Pinned Notes</div></div>
+                            {
+                                pinnedNotes.map((note, index) => {
+                                    return <NoteListView key={index} notz={note} updateNotes={updateNotes} />
+                                })
+                            }
+
+                        </div>
+                    ) :
+                    (pinnedNotes.length > 0
+                        &&
+                        <div>
+                            <div className={classes.gridPinnedNotes}><div>Pinned Notes</div></div>
+                            <GridView notz={pinnedNotes} updateNotes={updateNotes} />
+                        </div>
+                    )
+            }
+            {
+                user.view === 'List' ?
+
+                    (
+                        // noteObj.notes && noteObj.notes.length > 0
+                        otherNotes.length > 0
+                            ?
+                            (
+                                <div>
+                                    {pinnedNotes.length > 0 && <div className={classes.noteDisplay}><div className={classes.noteText}>Other Notes</div></div>}
+                                    {
+                                        (otherNotes.map((note, index) => {
+                                            return <NoteListView key={index} notz={note} updateNotes={updateNotes} />
+                                        }))
+                                    }
+                                </div>
+                            )
+                            :
+                            (<Empty />)
                     ) :
                     (
-                        noteObj.notes && noteObj.notes.length > 0 ? <GridView notz={noteObj.notes} updateNotes={updateNotes} /> : (<Empty />)
+
+                        otherNotes.length > 0
+                            ?
+                            <div>
+                                {pinnedNotes.length > 0 && <div className={classes.gridPinnedNotes}><div>Other Notes</div></div>}
+                                <GridView notz={otherNotes} updateNotes={updateNotes} />
+                            </div>
+                            :
+                            (<Empty />)
                     )
             }
             <Loader visible={loader} />

@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
         },
         [theme.breakpoints.down('md')]: {
             padding: "0 2.2rem",
-            marginLeft:"8px"
+            marginLeft: "8px"
         },
     },
     myMasonryGridColumn: {
@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-const GridView = ({ notz, updateNotes }) => {
+const GridView = ({ notz, updateNotes,isPin }) => {
     const classes = useStyles();
     const [breakPoints, setBreakPoints] = useState(5);
     const theme = useTheme();
@@ -60,17 +60,17 @@ const GridView = ({ notz, updateNotes }) => {
     });
 
     return (
-        <Masonry
-            breakpointCols={breakPoints}
-            className={classes.myMasonryGrid}
-            columnClassName={classes.myMasonryGridColumn}
-        >
-            {
-                notz.map((note,index) => {
-                    return <GridViewSub key={index} notz={note} updateNotes={updateNotes} />
-                })
-            }
-        </Masonry>
+            <Masonry
+                breakpointCols={breakPoints}
+                className={classes.myMasonryGrid}
+                columnClassName={classes.myMasonryGridColumn}
+            >
+                {
+                    notz.map((note, index) => {
+                        return <GridViewSub key={index} notz={note} updateNotes={updateNotes} />
+                    })
+                }
+            </Masonry>
 
     )
 }

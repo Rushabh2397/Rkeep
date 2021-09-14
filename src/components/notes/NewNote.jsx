@@ -95,14 +95,16 @@ const NewNote = () => {
     const handlePinnedNote = () => {
         setNoteObj({
             ...noteObj,
-            is_pinned : noteObj.is_pinned===1 ? 0 : 1
+            is_pinned : noteObj.is_pinned===1 ? 0 : 1,
+            is_archived: noteObj.is_pinned === 0 ? 0 : noteObj.is_archived
         })
     }
 
     const updateArchive = () => {
         setNoteObj({
             ...noteObj,
-            is_archived: noteObj.is_archived === 1 ? 0 : 1
+            is_archived: noteObj.is_archived === 1 ? 0 : 1,
+            is_pinned: noteObj.is_archived === 0 ? 0 : noteObj.is_pinned
         })
     }
 
