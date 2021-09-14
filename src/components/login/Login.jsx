@@ -58,13 +58,12 @@ const Login = () => {
                 localStorage.setItem('notzzUser',JSON.stringify({name:user.name,email:user.email,token:user.token,view:'List',screen:'Notes'}))
                 userDispatch({type:'Login',payload:user})
                 toast.success(res.data.message)
+                setLoader(false)
                 history.push('/')
             }
         } catch (error) {
             toast.error(error.response.data.message)
-        } finally{
-            setLoader(false)
-        }
+        } 
         
     }
 

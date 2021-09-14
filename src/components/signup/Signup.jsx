@@ -69,13 +69,12 @@ const Signup = () => {
                 toast.success(res.data.message)
                 localStorage.setItem('notzzUser',JSON.stringify({name:user.name,email:user.email,token:user.token}))
                 userDispatch({type:'SIGNUP',payload:user})
+                setLoader(false)
                 history.push('/')
             }
         } catch (error) {
             toast.error(error.response.data.message)
-        } finally {
-            setLoader(false)
-        }
+        } 
         
     }
 
