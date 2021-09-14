@@ -6,6 +6,7 @@ import { userLogin } from '../api'
 import { useUser } from '../context/UserContext'
 import Loader from '../Loader/Loader'
 import toast from 'react-hot-toast'
+import validator from 'validator';
 
 const useStyles = makeStyles((theme) => ({
     loginFormContainer:{
@@ -47,9 +48,13 @@ const Login = () => {
             if (email.email==='') {
                 setEmail({ ...email, error: true, errMsg: 'Email is required.' })
             }
+            if(!validator.isEmail(email.email)){
+                setEmail({ ...email, error: true, errMsg: 'Email is not valid.' })
+            }
             if (password.password === '') {
                 setPassword({ ...password, error: true, errMsg: 'Password is required.' })
             }
+            
     
             if(email.errMsg==='' || password.errMsg===''){
                 setLoader(true)

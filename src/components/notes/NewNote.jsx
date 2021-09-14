@@ -7,6 +7,8 @@ import { addUserNote } from '../api'
 import { useNote } from '../context/NoteContext'
 import Color from './color.json'
 import toast from 'react-hot-toast'
+import StarBorderOutlinedIcon from '@material-ui/icons/StarBorderOutlined';
+import StarOutlinedIcon from '@material-ui/icons/StarOutlined';
 
 const useStyles = makeStyles((theme) => ({
     noteDisplay: {
@@ -14,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: theme.spacing(3),
     },
     paperContainer: {
+        position: "relative",
         width: "80%",
         margin: "0 auto",
         [theme.breakpoints.up('sm')]: {
@@ -57,6 +60,11 @@ const useStyles = makeStyles((theme) => ({
             fontSize: "1rem"
         }
     },
+    pinIcon: {
+        position: "absolute",
+        right: "8px",
+        top: "8px"
+    },
 
     InputProps: {
         paddingLeft: "13px",
@@ -76,7 +84,7 @@ const NewNote = () => {
     const title = useRef(null);
     const note = useRef(null);
     const [addNote, setAddNote] = useState(false);
-    const [noteObj, setNoteObj] = useState({ title: '', note: '',is_archived:0, is_pinned: 0 })
+    const [noteObj, setNoteObj] = useState({ title: '', note: '', is_archived: 0, is_pinned: 0 })
     const [selectedColor, setSelectedColor] = useState(1)
     const { dispatch } = useNote()
 
@@ -84,10 +92,17 @@ const NewNote = () => {
         setSelectedColor(id)
     }
 
-    const updateArchive = ()=>{
+    const handlePinnedNote = () => {
         setNoteObj({
             ...noteObj,
-            is_archived : noteObj.is_archived===1 ? 0:1
+            is_pinned : noteObj.is_pinned===1 ? 0 : 1
+        })
+    }
+
+    const updateArchive = () => {
+        setNoteObj({
+            ...noteObj,
+            is_archived: noteObj.is_archived === 1 ? 0 : 1
         })
     }
 
@@ -103,24 +118,24 @@ const NewNote = () => {
             let userNote = noteObj.note
             if (userNote.trim() !== "") {
                 let newNote = {
-                    title : noteObj.title,
-                    note : noteObj.note,
+                    title: noteObj.title,
+                    note: noteObj.note,
                     is_archived: noteObj.is_archived,
-                    color : Color[selectedColor - 1].name  ,
+                    color: Color[selectedColor - 1].name,
                     is_pinned: noteObj.is_pinned
                 }
                 const res = await addUserNote(newNote)
                 toast.success(res.data.message)
-                if(noteObj.is_archived===0){
+                if (noteObj.is_archived === 0) {
                     dispatch({ type: 'ADD', payload: res.data.data })
                 }
-                
+
             }
 
         } catch (error) {
-            toast.error('Something went wrong plz try again.')
+            toast.error(error.response.data.message)
         } finally {
-            setNoteObj({ title: '', note: '', is_archived: false, is_pinned: false })
+            setNoteObj({ title: '', note: '', is_archived: 0, is_pinned: 0 })
             setSelectedColor(1)
         }
     }
@@ -130,7 +145,7 @@ const NewNote = () => {
 
             title: key === 'title' ? title.current.value : noteObj.title,
             note: key === 'note' ? note.current.value : noteObj.note,
-            is_archived : noteObj.is_archived
+            is_archived: noteObj.is_archived
         })
     }
 
@@ -185,6 +200,7 @@ const NewNote = () => {
                                     updateColor={updateColor}
                                     updateArchive={updateArchive}
                                 />
+                                <div onClick={handlePinnedNote} className={classes.pinIcon}>{noteObj.is_pinned ? <StarOutlinedIcon /> : <StarBorderOutlinedIcon />}</div>
                             </Paper>
                         </div>
                     </ClickAwayListener>

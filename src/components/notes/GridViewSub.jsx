@@ -7,6 +7,8 @@ import { useState } from 'react';
 import NoteAction from './NoteAction'
 import { useUser } from '../context/UserContext'
 import toast from 'react-hot-toast'
+//import StarBorderOutlinedIcon from '@material-ui/icons/StarBorderOutlined';
+//import StarOutlinedIcon from '@material-ui/icons/StarOutlined';
 
 const useStyles = makeStyles(theme => ({
     myMasonryGrid: {
@@ -33,6 +35,9 @@ const useStyles = makeStyles(theme => ({
     //     [theme.breakpoints.up('md')]: {
     //         width: "60%"
     //     }
+    // },
+    // gridNoteCss:{
+    //   position:'relative'
     // },
     textAreaTitle: {
         width: "100%",
@@ -68,6 +73,11 @@ const useStyles = makeStyles(theme => ({
             fontSize: "1rem"
         }
     },
+    pinIcon: {
+        position: "absolute",
+        right: "8px",
+        top: "8px"
+    },
    
 }))
 
@@ -86,6 +96,14 @@ const GridViewSub = ({notz,updateNotes}) => {
             toast.error("You can't edit in trash")
         }
     }
+
+    // const handlePinnedNote = (note_id)=>{
+    //     console.log("inside handle",notz.is_pinned)
+    //     updateNotes({
+    //             _id: note_id,
+    //             is_pinned: notz.is_pinned === 1 ? 0 : 1
+    //     })
+    // }
      
     return (
         <div className={classes.noteDisplay} >
@@ -128,6 +146,7 @@ const GridViewSub = ({notz,updateNotes}) => {
                         icon={{ palette: true, archive: true, delete: true }}
 
                     />
+                    {/* <div onClick={()=>{handlePinnedNote(notz._id)}} className={classes.pinIcon}>{notz.is_pinned ? <StarOutlinedIcon /> : <StarBorderOutlinedIcon />}</div> */}
                 </Paper>
             </div>
 

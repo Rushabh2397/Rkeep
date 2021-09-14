@@ -26,6 +26,7 @@ const noteReducer = (state, action) => {
                        note.title = action.payload.title ? action.payload.title : note.title
                        note.color = action.payload.color ? action.payload.color : note.color
                        note.is_archived = action.payload.is_archived  ? action.payload.is_archived : note.is_archived
+                       note.is_pinned = action.payload.is_pinned ? action.payload.is_pinned : note.is_pinned
                     }
                     return note
                 }),

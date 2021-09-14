@@ -7,6 +7,8 @@ import UpdateNote from './UpdateNote'
 import Color from './color.json'
 import { useUser } from '../context/UserContext'
 import toast from 'react-hot-toast'
+//import StarBorderOutlinedIcon from '@material-ui/icons/StarBorderOutlined';
+//import StarOutlinedIcon from '@material-ui/icons/StarOutlined';
 
 const useStyles = makeStyles((theme) => ({
     noteDisplay: {
@@ -14,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: theme.spacing(5),
     },
     paperContainer: {
+       // position:'relative',
         width: "80%",
         margin: "0 auto",
         [theme.breakpoints.up('sm')]: {
@@ -56,6 +59,11 @@ const useStyles = makeStyles((theme) => ({
             padding: '0.7rem',
             fontSize: "1rem"
         }
+    },
+    pinIcon: {
+        position: "absolute",
+        right: "8px",
+        top: "8px"
     }
 
 
@@ -82,7 +90,14 @@ const NoteListView = ({ notz, updateNotes }) => {
         }
 
     }
-
+   
+    // const handlePinnedNote = (note_id)=>{
+    //     console.log("inside handle",notz.is_pinned)
+    //     updateNotes({
+    //             _id: note_id,
+    //             is_pinned: notz.is_pinned === 1 ? 0 : 1
+    //     })
+    // }
 
 
 
@@ -92,7 +107,7 @@ const NoteListView = ({ notz, updateNotes }) => {
 
 
             <div className={classes.paperContainer} >
-                <Paper elevation={2} style={{ backgroundColor: Color[noteColor.id - 1].color }} >
+                <Paper className={classes.paper} elevation={2} style={{ backgroundColor: Color[noteColor.id - 1].color }} >
                     <TextareaAutosize
                         className={classes.textAreaTitle}
                         placeholder="Title"
@@ -128,6 +143,7 @@ const NoteListView = ({ notz, updateNotes }) => {
                         icon={{ palette: true, archive: true, delete: true }}
 
                     />
+                    {/* <div onClick={()=>{handlePinnedNote(notz._id)}} className={classes.pinIcon}>{notz.is_pinned ? <StarOutlinedIcon /> : <StarBorderOutlinedIcon />}</div> */}
                 </Paper>
             </div>
 
