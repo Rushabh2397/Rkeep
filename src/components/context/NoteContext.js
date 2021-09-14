@@ -8,7 +8,7 @@ const noteReducer = (state, action) => {
             return {
                 notes :[action.payload,...state.notes],
                 noteCount : state.noteCount + 1,
-                totalNotes : state.totalNotes - 1
+                totalNotes : state.totalNotes + 1
             };
 
         case 'GET_ALL_NOTE':
