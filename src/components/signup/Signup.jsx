@@ -68,7 +68,7 @@ const Signup = () => {
                 setPassword({ ...password, error: true, errMsg: 'Password is required.' })
             }
     
-            if(name.errMsg==='' || email.errMsg==='' || password.errMsg===''){
+            if(name.errMsg==='' && email.errMsg==='' && password.errMsg===''){
                 setLoader(true)
                 const res = await userSignup({name:name.name,email:email.email,password:password.password})
                 let user = res.data.data
@@ -89,8 +89,13 @@ const Signup = () => {
         if (key === 'name') {
             setName({ name: e.target.value ? e.target.value : '', error: '', errMsg: '' })
         } else if (key === 'email') {
-            setEmail({ email: e.target.value ? e.target.value : '', error: '', errMsg: '' })
+            let errMsg=''
+            if(!validator.isEmail(e.target.value )){
+                errMsg = 'Email is not valid.'
+            }
+            setEmail({ email: e.target.value ? e.target.value : '', error: '', errMsg: errMsg })
         } else{
+            
             setPassword({ password: e.target.value ? e.target.value : '',error: '', errMsg: '' })  
         }
     }
@@ -105,7 +110,7 @@ const Signup = () => {
                             <TextField
                                 placeholder="Name"
                                 error={name.error ? true : false}
-                                id="standard-error-helper-text"
+                                //id="standard-error-helper-text"
                                 helperText={name.error ? name.errMsg : ''}
                                 fullWidth
                                 onChange={(e) => { handleField(e,'name')} }
@@ -115,7 +120,7 @@ const Signup = () => {
                             <TextField
                                 placeholder="Email"
                                 error={email.error ? true : false}
-                                id="standard-error-helper-text"
+                                //id="standard-error-helper-text"
                                 helperText={email.error ? email.errMsg : ''}
                                 onChange={(e) => { handleField(e,'email')}}
                             />
@@ -125,7 +130,7 @@ const Signup = () => {
                                 type="password"
                                 placeholder="Password"
                                 error={password.error ? true : false}
-                                id="standard-error-helper-text"
+                                //id="standard-error-helper-text"
                                 helperText={password.error ? password.errMsg : ''}
                                 onChange={(e) => { handleField(e,'password') }}
                             />
