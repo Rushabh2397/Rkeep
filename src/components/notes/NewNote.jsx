@@ -118,7 +118,8 @@ const NewNote = () => {
         try {
             setAddNote(!addNote)
             let userNote = noteObj.note
-            if (userNote.trim() !== "") {
+            let noteTitle = noteObj.title
+            if (userNote.trim() !== "" && noteTitle.trim()!=="") {
                 let newNote = {
                     title: noteObj.title,
                     note: noteObj.note,
@@ -132,7 +133,7 @@ const NewNote = () => {
                     dispatch({ type: 'ADD', payload: res.data.data })
                 }
 
-            }
+            } 
 
         } catch (error) {
             toast.error(error.response.data.message)

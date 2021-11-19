@@ -18,6 +18,7 @@ import axios from "axios";
         if (error.response) {
             if (error.response.status === 401) {
                 localStorage.removeItem('notzzUser')
+                window.location.href = '/login';
                 return Promise.reject(error);
             } else return Promise.reject(error);
         } else if (error.request) {

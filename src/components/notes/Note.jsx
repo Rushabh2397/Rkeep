@@ -136,7 +136,9 @@ const Note = () => {
                                 </div>
                             )
                             :
-                            (<Empty />)
+                            (<div>
+                               { otherNotes.length===0 && pinnedNotes.length===0 && <Empty />}
+                            </div>)
                     ) :
                     (
 
